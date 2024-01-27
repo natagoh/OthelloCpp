@@ -7,11 +7,11 @@ OthelloBoard::OthelloBoard() {
 
 void OthelloBoard::clearBoard() {
 	for (auto& arr : board)
-		std::fill(std::begin(arr), std::end(arr), State::EMPTY);
-	board[3][3] = State::WHITE;
-	board[4][3] = State::BLACK;
-	board[3][4] = State::BLACK;
-	board[4][4] = State::WHITE;
+		std::fill(std::begin(arr), std::end(arr), Piece::EMPTY);
+	board[3][3] = Piece::WHITE;
+	board[4][3] = Piece::BLACK;
+	board[3][4] = Piece::BLACK;
+	board[4][4] = Piece::WHITE;
 
 }
 

@@ -1,18 +1,26 @@
 #pragma once
 #include <vector>
+#include <tuple> 
 
-enum class State {
+enum class Piece {
 	EMPTY = '*',
 	WHITE = 'w',
 	BLACK = 'b',
 };
 
+// an action consists of coordinates and the piece which will be placed there
+typedef std::tuple<int, int, Piece> Action;
+
 class OthelloBoard
 {
 
 private:
-	State board[8][8];
-	// std::vector<std::vector<State>> board;
+	Piece board[8][8];
+
+	void flipPieces(Action action);
+
+	bool isActionValid(Action action);
+
 
 public:
 	OthelloBoard::OthelloBoard();
@@ -20,4 +28,13 @@ public:
 	void clearBoard();
 
 	void printBoard();
+
+	void setBoard(const Piece(&board)[8][8]);
+
+
+	// gets all of the valid actions for the given player (either 'w' or 'b')
+	std::vector<Action> getValidActions(char player);
+
+	// gets the board state after applying the given action
+	Piece** getNextBoardState(Action action);
 };

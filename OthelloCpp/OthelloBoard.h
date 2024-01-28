@@ -32,9 +32,9 @@ public:
 
 	void printBoard();
 
-	void setBoard(const Piece board[][8]);
+	void setBoard(const Piece val[][8]);
 
-	Piece** getBoard();
+	void copyBoard(Piece dest[][8]);
 
 
 	// gets all of the valid actions for the given player (either 'w' or 'b')

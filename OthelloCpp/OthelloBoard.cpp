@@ -1,5 +1,6 @@
 #include "OthelloBoard.h"
 #include<tuple> 
+#include <cstring>
 
 OthelloBoard::OthelloBoard() {
 	this->clearBoard();
@@ -25,6 +26,18 @@ void OthelloBoard::printBoard() {
 	printf("\n");
 }
 
+void OthelloBoard::setBoard(const Piece val[][8]) {
+	for (int i = 0; i < std::size(board); i++) {
+		for (int j = 0; j < std::size(board[0]); j++) {
+			board[i][j] = val[i][j];
+		}
+	}
+}
+
+void OthelloBoard::copyBoard(Piece dest[][8]) {
+	std::memcpy(dest, board, 8 * 8 * sizeof(Piece));
+}
+
 void OthelloBoard::flipPieces(Action action) {
 
 }
@@ -41,7 +54,6 @@ std::vector<Action> OthelloBoard::getValidActions(const char &player) {
 	const Piece pieceColor = player == 'O' ? Piece::WHITE : Piece::BLACK;
 	const Piece opposingColor = pieceColor == Piece::WHITE ? Piece::BLACK : Piece::WHITE;
 
-	printf("opposingColor: %c\n", opposingColor);
 	std::vector<Action> actions;
 	actions.reserve(8);
 	for (int i = 0; i < 8; i++) {
@@ -50,7 +62,6 @@ std::vector<Action> OthelloBoard::getValidActions(const char &player) {
 				continue;
 			}
 
-			printf("i: %i, j: %i\n", i, j);
 			// search for opposite color piece in all 8 directions, diagonals
 			for (int k = -1; k <= 1; k++) {
 				for (int l = -1; l <= 1; l++) {
@@ -74,14 +85,6 @@ std::vector<Action> OthelloBoard::getValidActions(const char &player) {
 				}
 			}
 		}
-	}
-
-	// show actions on the board
-	for (const auto& action : actions) {
-		const int i = std::get<0>(action);
-		const int j = std::get<1>(action);
-		const Piece piece = std::get<2>(action);
-		board[i][j] = Piece::POSSIBLE;
 	}
 
 	return actions;

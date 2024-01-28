@@ -13,9 +13,21 @@ int main()
 
 	othello.printBoard();
 
-	othello.getValidActions('X');
+	const auto actions = othello.getValidActions('X');
 
 	printf("possible values for player X\n");
+	Piece board[8][8];
+	othello.copyBoard(board);
+
+	// show actions on the board
+	for (const auto& action : actions) {
+		const int i = std::get<0>(action);
+		const int j = std::get<1>(action);
+		const Piece piece = std::get<2>(action);
+		board[i][j] = Piece::POSSIBLE;
+	}
+
+	othello.setBoard(board);
 	othello.printBoard();
 
 	return 0;

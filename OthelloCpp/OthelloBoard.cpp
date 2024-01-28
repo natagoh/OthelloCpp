@@ -92,11 +92,12 @@ void OthelloBoard::performAction(Action action) {
 	const Piece pieceColor = std::get<2>(action);
 	const Piece oppositeColor = getOppositeColor(pieceColor);
 
-	// place the piece at (x, y) on the board
-	board[x][y] = pieceColor;
+	bool flip[8][8];
+	for (auto& arr : flip)
+		std::fill(std::begin(arr), std::end(arr), false);
 
-	Piece boardTmp[8][8];
-	copyBoard(boardTmp);
+	// place the piece at (x, y) on the board
+	flip[x][y] = true;
 
 	// search all eight directions for opposite color pieces
 	for (int k = -1; k <= 1; k++) {
@@ -109,24 +110,29 @@ void OthelloBoard::performAction(Action action) {
 			// keep searching in the given i, j offset direction
 			int iOffset = x + k;
 			int jOffset = y + l;
-			bool moved = false;
 			while (inRange(iOffset, jOffset) && board[iOffset][jOffset] == oppositeColor) {
-				boardTmp[iOffset][jOffset] = pieceColor;
 				iOffset += k;
 				jOffset += l;
-				moved = true;
 			}
-			
-			if (!moved || !inRange(iOffset, jOffset) || board[iOffset][jOffset] != pieceColor) {
-				// need to backtrack and reset pieces
-				while (iOffset != x && jOffset != y) {
+
+			// found matching end piece, so we can flip
+			if (board[iOffset][jOffset] == pieceColor) {
+				do {
 					iOffset -= k;
 					jOffset -= l;
-					boardTmp[iOffset][jOffset] = board[iOffset][jOffset];
-				}
+					flip[iOffset][jOffset] = true;
+				} while (iOffset != x && jOffset != y);
 			}
 		}
 	}
-
-	setBoard(boardTmp);
+	
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			if (flip[i][j]) {
+				board[i][j] = pieceColor;
+			}
+		}
+	}
+	
+	
 }

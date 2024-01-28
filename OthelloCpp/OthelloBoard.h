@@ -3,9 +3,10 @@
 #include <tuple> 
 
 enum class Piece {
-	EMPTY = '*',
-	WHITE = 'w',
-	BLACK = 'b',
+	EMPTY = '-',
+	POSSIBLE = '*',
+	WHITE = 'O',
+	BLACK = 'X',
 };
 
 // an action consists of coordinates and the piece which will be placed there
@@ -22,6 +23,8 @@ private:
 	bool isActionValid(Action action);
 
 
+
+
 public:
 	OthelloBoard::OthelloBoard();
 
@@ -29,11 +32,13 @@ public:
 
 	void printBoard();
 
-	void setBoard(const Piece(&board)[8][8]);
+	void setBoard(const Piece board[][8]);
+
+	Piece** getBoard();
 
 
 	// gets all of the valid actions for the given player (either 'w' or 'b')
-	std::vector<Action> getValidActions(char player);
+	std::vector<Action> getValidActions(const char &player);
 
 	// gets the board state after applying the given action
 	Piece** getNextBoardState(Action action);

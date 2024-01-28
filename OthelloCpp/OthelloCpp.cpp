@@ -13,5 +13,10 @@ int main()
 
 	othello.printBoard();
 
+	othello.getValidActions('X');
+
+	printf("possible values for player X\n");
+	othello.printBoard();
+
 	return 0;
 }

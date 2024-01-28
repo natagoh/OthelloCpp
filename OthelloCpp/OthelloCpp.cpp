@@ -17,7 +17,9 @@ int main()
 
 	printf("possible values for player X\n");
 	Piece board[8][8];
+	Piece originalBoard[8][8];
 	othello.copyBoard(board);
+	othello.copyBoard(originalBoard);
 
 	// show actions on the board
 	for (const auto& action : actions) {
@@ -28,6 +30,13 @@ int main()
 	}
 
 	othello.setBoard(board);
+	othello.printBoard();
+
+
+	// performing action(3, 2, BLACK)
+	printf("after performing action (3, 2, BLACK)\n");
+	othello.setBoard(originalBoard);
+	othello.performAction(std::make_tuple(3, 2, Piece::BLACK));
 	othello.printBoard();
 
 	return 0;

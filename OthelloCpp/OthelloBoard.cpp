@@ -38,21 +38,17 @@ void OthelloBoard::copyBoard(Piece dest[][8]) {
 	std::memcpy(dest, board, 8 * 8 * sizeof(Piece));
 }
 
-void OthelloBoard::flipPieces(Action action) {
-
-}
-
-bool OthelloBoard::isActionValid(Action action) {
-	return true;
-}
 
 bool inRange(int i, int j) {
 	return (i < 0 || j < 0 || i >= 8 || j >= 8) ? false : true;
 }
 
+Piece getOppositeColor(Piece pieceColor) {
+	return pieceColor == Piece::WHITE ? Piece::BLACK : Piece::WHITE;
+}
 std::vector<Action> OthelloBoard::getValidActions(const char &player) {
 	const Piece pieceColor = player == 'O' ? Piece::WHITE : Piece::BLACK;
-	const Piece opposingColor = pieceColor == Piece::WHITE ? Piece::BLACK : Piece::WHITE;
+	const Piece oppositeColor = getOppositeColor(pieceColor);
 
 	std::vector<Action> actions;
 	actions.reserve(8);
@@ -74,7 +70,7 @@ std::vector<Action> OthelloBoard::getValidActions(const char &player) {
 					int iOffset = i + k;
 					int jOffset = j + l;
 					bool moved = false;
-					while (inRange(iOffset, jOffset) && board[iOffset][jOffset] == opposingColor) {
+					while (inRange(iOffset, jOffset) && board[iOffset][jOffset] == oppositeColor) {
 						iOffset += k;
 						jOffset += l;
 						moved = true;
@@ -88,4 +84,49 @@ std::vector<Action> OthelloBoard::getValidActions(const char &player) {
 	}
 
 	return actions;
+}
+
+void OthelloBoard::performAction(Action action) {
+	const int x = std::get<0>(action);
+	const int y = std::get<1>(action);
+	const Piece pieceColor = std::get<2>(action);
+	const Piece oppositeColor = getOppositeColor(pieceColor);
+
+	// place the piece at (x, y) on the board
+	board[x][y] = pieceColor;
+
+	Piece boardTmp[8][8];
+	copyBoard(boardTmp);
+
+	// search all eight directions for opposite color pieces
+	for (int k = -1; k <= 1; k++) {
+		for (int l = -1; l <= 1; l++) {
+			if (k == 0 && l == 0) {
+				continue;
+			}
+
+			// search direction for possible pieces to flip
+			// keep searching in the given i, j offset direction
+			int iOffset = x + k;
+			int jOffset = y + l;
+			bool moved = false;
+			while (inRange(iOffset, jOffset) && board[iOffset][jOffset] == oppositeColor) {
+				boardTmp[iOffset][jOffset] = pieceColor;
+				iOffset += k;
+				jOffset += l;
+				moved = true;
+			}
+			
+			if (!moved || !inRange(iOffset, jOffset) || board[iOffset][jOffset] != pieceColor) {
+				// need to backtrack and reset pieces
+				while (iOffset != x && jOffset != y) {
+					boardTmp[iOffset][jOffset] = board[iOffset][jOffset];
+					iOffset -= k;
+					jOffset -= l;
+				}
+			}
+		}
+	}
+
+	setBoard(boardTmp);
 }

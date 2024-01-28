@@ -120,9 +120,9 @@ void OthelloBoard::performAction(Action action) {
 			if (!moved || !inRange(iOffset, jOffset) || board[iOffset][jOffset] != pieceColor) {
 				// need to backtrack and reset pieces
 				while (iOffset != x && jOffset != y) {
-					boardTmp[iOffset][jOffset] = board[iOffset][jOffset];
 					iOffset -= k;
 					jOffset -= l;
+					boardTmp[iOffset][jOffset] = board[iOffset][jOffset];
 				}
 			}
 		}

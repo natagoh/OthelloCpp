@@ -39,5 +39,33 @@ int main()
 	othello.performAction(std::make_tuple(3, 2, Piece::BLACK));
 	othello.printBoard();
 
+
+	// game loop
+	printf("========GAME LOOP=======\n");
+	othello.clearBoard();
+	for (int i = 0; i < 3; i++) {
+		// player X turn
+		printf("player X turn\n");
+		auto actions = othello.getValidActions((char) Piece::BLACK);
+		
+		// pick a random action
+		int idx = rand() % actions.size();
+		Action action = actions[idx];
+
+		othello.performAction(action);
+		othello.printBoard();
+
+		// player O turn
+		printf("player O turn\n");
+		actions = othello.getValidActions((char) Piece::WHITE);
+
+		// pick a random action
+		idx = rand() % actions.size();
+		action = actions[idx];
+
+		othello.performAction(action);
+		othello.printBoard();
+	}
+
 	return 0;
 }

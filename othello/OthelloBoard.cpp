@@ -87,14 +87,13 @@ std::vector<Action> OthelloBoard::getValidActions(const char &player) {
 }
 
 void OthelloBoard::performAction(Action action) {
-	const int x = std::get<0>(action);
-	const int y = std::get<1>(action);
-	const Piece pieceColor = std::get<2>(action);
+	const auto [x, y, pieceColor] = action;
 	const Piece oppositeColor = getOppositeColor(pieceColor);
 
 	bool flip[8][8];
-	for (auto& arr : flip)
+	for (auto& arr : flip) {
 		std::fill(std::begin(arr), std::end(arr), false);
+	}
 
 	// place the piece at (x, y) on the board
 	flip[x][y] = true;

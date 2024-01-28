@@ -21,10 +21,11 @@ int main()
 
         // clear the window with black color
         window.clear(sf::Color::Black);
-        sf::CircleShape shape(50.f);
+
+        sf::CircleShape shape(48.f);
 
         // set the shape color to green
-        shape.setFillColor(sf::Color(100, 250, 50));
+        shape.setFillColor(sf::Color::Black);
 
         window.draw(shape);
 

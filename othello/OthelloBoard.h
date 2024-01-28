@@ -3,10 +3,10 @@
 #include <tuple> 
 
 enum class Piece {
-	EMPTY = '-',
-	POSSIBLE = '*',
-	WHITE = 'O',
-	BLACK = 'X',
+	Empty = '-',
+	Possible = '*',
+	White = 'O',
+	Black = 'X',
 };
 
 // an action consists of coordinates and the piece which will be placed there

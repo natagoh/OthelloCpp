@@ -8,11 +8,11 @@ OthelloBoard::OthelloBoard() {
 
 void OthelloBoard::clearBoard() {
 	for (auto& arr : board)
-		std::fill(std::begin(arr), std::end(arr), Piece::EMPTY);
-	board[3][3] = Piece::WHITE;
-	board[3][4] = Piece::BLACK;
-	board[4][3] = Piece::BLACK;
-	board[4][4] = Piece::WHITE;
+		std::fill(std::begin(arr), std::end(arr), Piece::Empty);
+	board[3][3] = Piece::White;
+	board[3][4] = Piece::Black;
+	board[4][3] = Piece::Black;
+	board[4][4] = Piece::White;
 
 }
 
@@ -44,10 +44,10 @@ bool inRange(int i, int j) {
 }
 
 Piece getOppositeColor(Piece pieceColor) {
-	return pieceColor == Piece::WHITE ? Piece::BLACK : Piece::WHITE;
+	return pieceColor == Piece::White ? Piece::Black : Piece::White;
 }
 std::vector<Action> OthelloBoard::getValidActions(const char &player) {
-	const Piece pieceColor = player == 'O' ? Piece::WHITE : Piece::BLACK;
+	const Piece pieceColor = player == 'O' ? Piece::White : Piece::Black;
 	const Piece oppositeColor = getOppositeColor(pieceColor);
 
 	std::vector<Action> actions;
@@ -75,7 +75,7 @@ std::vector<Action> OthelloBoard::getValidActions(const char &player) {
 						jOffset += l;
 						moved = true;
 					}
-					if (moved && inRange(iOffset, jOffset) && board[iOffset][jOffset] == Piece::EMPTY) {
+					if (moved && inRange(iOffset, jOffset) && board[iOffset][jOffset] == Piece::Empty) {
 						actions.push_back(std::make_tuple(iOffset, jOffset, pieceColor));
 					}
 				}

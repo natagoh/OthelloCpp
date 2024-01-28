@@ -4,7 +4,7 @@
 int main()
 {
     // create the window
-    auto window = sf::RenderWindow{ { 1080u, 1080u }, "CMake SFML Project" };
+    auto window = sf::RenderWindow{ { 1080u, 1080u }, "Othello" };
     window.setFramerateLimit(60);
 
     // run the program as long as the window is open
@@ -25,7 +25,7 @@ int main()
         sf::CircleShape shape(48.f);
 
         // set the shape color to green
-        shape.setFillColor(sf::Color::Black);
+        shape.setFillColor(sf::Color::White);
 
         window.draw(shape);
 

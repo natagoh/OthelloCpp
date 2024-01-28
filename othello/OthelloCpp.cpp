@@ -26,7 +26,7 @@ int main()
 		const int i = std::get<0>(action);
 		const int j = std::get<1>(action);
 		const Piece piece = std::get<2>(action);
-		board[i][j] = Piece::POSSIBLE;
+		board[i][j] = Piece::Possible;
 	}
 
 	othello.setBoard(board);
@@ -36,7 +36,7 @@ int main()
 	// performing action(3, 2, BLACK)
 	printf("after performing action (3, 2, BLACK)\n");
 	othello.setBoard(originalBoard);
-	othello.performAction(std::make_tuple(3, 2, Piece::BLACK));
+	othello.performAction(std::make_tuple(3, 2, Piece::Black));
 	othello.printBoard();
 
 	// now try O actions
@@ -51,7 +51,7 @@ int main()
 		const int i = std::get<0>(action);
 		const int j = std::get<1>(action);
 		const Piece piece = std::get<2>(action);
-		board[i][j] = Piece::POSSIBLE;
+		board[i][j] = Piece::Possible;
 	}
 	othello.setBoard(board);
 	othello.printBoard();
@@ -61,7 +61,7 @@ int main()
 	printf("before move\n");
 	othello.printBoard();
 	printf("after performing action\n");
-	othello.performAction(std::make_tuple(2, 2, Piece::WHITE));
+	othello.performAction(std::make_tuple(2, 2, Piece::White));
 	othello.printBoard();
 
 
@@ -71,7 +71,7 @@ int main()
 	for (int i = 0; i < 3; i++) {
 		// player X turn
 		printf("player X turn\n");
-		auto actions = othello.getValidActions((char) Piece::BLACK);
+		auto actions = othello.getValidActions((char) Piece::Black);
 		
 		// pick a random action
 		int idx = rand() % actions.size();
@@ -82,7 +82,7 @@ int main()
 
 		// player O turn
 		printf("player O turn\n");
-		actions = othello.getValidActions((char) Piece::WHITE);
+		actions = othello.getValidActions((char) Piece::White);
 
 		// pick a random action
 		idx = rand() % actions.size();

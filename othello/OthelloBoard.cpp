@@ -67,16 +67,16 @@ std::vector<Action> OthelloBoard::getValidActions(const char &player) {
 
 					// search direction for action
 					// keep searching in the given i, j offset direction
-					int iOffset = i + k;
-					int jOffset = j + l;
+					int rowOffset = i + k;
+					int colOffset = j + l;
 					bool moved = false;
-					while (inRange(iOffset, jOffset) && board[iOffset][jOffset] == oppositeColor) {
-						iOffset += k;
-						jOffset += l;
+					while (inRange(rowOffset, colOffset) && board[rowOffset][colOffset] == oppositeColor) {
+						rowOffset += k;
+						colOffset += l;
 						moved = true;
 					}
-					if (moved && inRange(iOffset, jOffset) && board[iOffset][jOffset] == Piece::Empty) {
-						actions.push_back(std::make_tuple(iOffset, jOffset, pieceColor));
+					if (moved && inRange(rowOffset, colOffset) && board[rowOffset][colOffset] == Piece::Empty) {
+						actions.push_back(std::make_tuple(rowOffset, colOffset, pieceColor));
 					}
 				}
 			}
@@ -87,7 +87,7 @@ std::vector<Action> OthelloBoard::getValidActions(const char &player) {
 }
 
 void OthelloBoard::performAction(Action action) {
-	const auto [x, y, pieceColor] = action;
+	const auto [row, col, pieceColor] = action;
 	const Piece oppositeColor = getOppositeColor(pieceColor);
 
 	bool flip[8][8];
@@ -95,32 +95,32 @@ void OthelloBoard::performAction(Action action) {
 		std::fill(std::begin(arr), std::end(arr), false);
 	}
 
-	// place the piece at (x, y) on the board
-	flip[x][y] = true;
+	// place the piece at (row, col) on the board
+	flip[row][col] = true;
 
 	// search all eight directions for opposite color pieces
-	for (int k = -1; k <= 1; k++) {
-		for (int l = -1; l <= 1; l++) {
-			if (k == 0 && l == 0) {
+	for (int i = -1; i <= 1; i++) {
+		for (int j = -1; j <= 1; j++) {
+			if (i == 0 && j == 0) {
 				continue;
 			}
 
 			// search direction for possible pieces to flip
 			// keep searching in the given i, j offset direction
-			int iOffset = x + k;
-			int jOffset = y + l;
-			while (inRange(iOffset, jOffset) && board[iOffset][jOffset] == oppositeColor) {
-				iOffset += k;
-				jOffset += l;
+			int rowOffset = row + i;
+			int colOffset = col + j;
+			while (inRange(rowOffset, colOffset) && board[rowOffset][colOffset] == oppositeColor) {
+				rowOffset += i;
+				colOffset += j;
 			}
 
 			// found matching end piece, so we can flip
-			if (board[iOffset][jOffset] == pieceColor) {
+			if (board[rowOffset][colOffset] == pieceColor) {
 				do {
-					iOffset -= k;
-					jOffset -= l;
-					flip[iOffset][jOffset] = true;
-				} while (iOffset != x && jOffset != y);
+					rowOffset -= i;
+					colOffset -= j;
+					flip[rowOffset][colOffset] = true;
+				} while (rowOffset != row && colOffset != col);
 			}
 		}
 	}

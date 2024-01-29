@@ -36,6 +36,8 @@ void GameManager::processGameLoop() {
     // starts the clock
     sf::Clock clock; 
 
+    int playerIdx = 0;
+
     // run the program as long as the window is open
     while (window.isOpen())
     {
@@ -68,19 +70,15 @@ void GameManager::processGameLoop() {
             printf("GAME OVER\n");
         } else {
             // player does an action
-            for (const auto& player : _players) {
-                processGameStep(player);
-
-                // render current board state
-               // _othello.copyBoard(board);
-                //gameView.renderGameState(window, board);
-            }
+            processGameStep(_players[playerIdx]);
+            playerIdx++;
+            playerIdx %= 2;
         }
 
         // figure out which square the mouse is clicking
         sf::Vector2i position = sf::Mouse::getPosition(window);
         printf("mouse pos: %i, %i\n", position.x, position.y);
         // end the current frame
-        window.display();
+       
     }
 }

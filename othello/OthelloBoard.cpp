@@ -101,17 +101,17 @@ std::vector<Action> OthelloBoard::getValidActions(const char &player) {
 }
 
 
-void OthelloBoard::clearSpecialPieces() {
+void OthelloBoard::clearSpecialPieces(bool keepRecentMove) {
 	// clear all previous possible actions
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			switch (_board[i][j]) {
 				case Piece::NewWhite: {
-					_board[i][j] = Piece::White;
+					_board[i][j] = keepRecentMove ? Piece::NewWhite : Piece::White;
 					break;
 				}
 				case Piece::NewBlack: {
-					_board[i][j] = Piece::Black;
+					_board[i][j] = keepRecentMove ? Piece::NewBlack : Piece::Black;
 					break;
 				}
 				case Piece::Possible: {
@@ -128,7 +128,8 @@ void OthelloBoard::clearSpecialPieces() {
 }
 
 void OthelloBoard::enableActionHints(std::vector<Action> &actions) {
-	clearSpecialPieces();
+	const bool keepRecentMove = true;
+	clearSpecialPieces(keepRecentMove);
 
 	// display possible actions
 	for (const auto& action : actions) {

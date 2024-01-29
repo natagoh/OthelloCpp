@@ -28,7 +28,8 @@ public:
 
 
 	// clears all special pieces: action hints, new piece indicators
-	void clearSpecialPieces();
+	// option to keep recent moves
+	void clearSpecialPieces(bool keepRecentMove = false);
 
 	// prints the board state
 	void printBoard();

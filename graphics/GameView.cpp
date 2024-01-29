@@ -21,12 +21,7 @@ void GameView::renderGameGrid(sf::RenderWindow& window) {
    *
    * There is going to be some buffer between the piece and the square containing it
    */
-    /*
-    const float buffer = 8.f;
-    const float pieceRadius = 32.f;
-    const float boardSquareSize = (pieceRadius + buffer) * 2;
-    const float boardSize = 8 * boardSquareSize;
-    */ 
+
     // create a render texture for the board
     sf::RenderTexture renderTexture;
     if (!renderTexture.create(_boardSize, _boardSize)) {

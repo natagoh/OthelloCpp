@@ -18,6 +18,9 @@ class OthelloBoard
 private:
 	Piece _board[8][8];
 
+	// clears all action hints
+	void clearAllActionHints();
+
 public:
 	OthelloBoard::OthelloBoard();
 
@@ -36,6 +39,13 @@ public:
 	// gets all of the valid actions for the given player (either 'w' or 'b')
 	std::vector<Action> getValidActions(const char &player);
 
+	// show action hints on the board
+	void enableActionHints(std::vector<Action> &actions);
+
 	// flips pieces given a valid action
 	void performAction(Action action);
+
+	// checks if the game is over (no more possible actions for either player)
+	bool isGameOver();
+
 };

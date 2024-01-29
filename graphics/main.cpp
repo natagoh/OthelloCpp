@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "GameView.h"
+#include "GameManager.h"
 
 int main()
 {
@@ -27,33 +28,28 @@ int main()
   
     OthelloBoard othello = OthelloBoard();
     
+    /*
     othello.printBoard();
 
     auto actions = othello.getValidActions('X');
 
     printf("possible values for player X\n");
+
+    othello.enableActionHints(actions);
+
     Piece board[8][8];
-    Piece originalBoard[8][8];
     othello.copyBoard(board);
-    othello.copyBoard(originalBoard);
-
-    // show actions on the board
-    for (const auto& action : actions) {
-        const int i = std::get<0>(action);
-        const int j = std::get<1>(action);
-        const Piece piece = std::get<2>(action);
-        board[i][j] = Piece::Possible;
-    }
-
-    othello.setBoard(board);
     othello.printBoard();
-
+    */
     
 
-    // GameManager gameManager = GameManager();
+    GameManager gameManager = GameManager(othello);
     GameView gameView = GameView();
 
+    gameManager.processGameLoop();
+
     // run the program as long as the window is open
+    /*
     while (window.isOpen())
     {
         // check all the window's events that were triggered since the last iteration of the loop
@@ -67,18 +63,19 @@ int main()
 
         // clear the window with black color
         window.clear(sf::Color::Black);
-
-        // draw game grid
-        //gameView.renderGameGrid(window);
-
-        // draw a game piece
-        //gameView.renderPiece(window, Piece::Black, 2, 4);
-      
+           
+        
+        Piece board[8][8];
+        othello.copyBoard(board);
         gameView.renderGameState(window, board);
 
+        // figure out which square the mouse is clicking
+        sf::Vector2i position = sf::Mouse::getPosition(window);
+        printf("mouse pos: %i, %i\n", position.x, position.y);
         // end the current frame
         window.display();
     }
+    */
 
     return 0;
 }

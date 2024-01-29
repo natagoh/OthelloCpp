@@ -75,7 +75,10 @@ std::vector<Action> OthelloBoard::getValidActions(const char &player) {
 						colOffset += l;
 						moved = true;
 					}
-					if (moved && inRange(rowOffset, colOffset) && _board[rowOffset][colOffset] == Piece::Empty) {
+					if (moved 
+						&& inRange(rowOffset, colOffset) 
+						&& _board[rowOffset][colOffset] != Piece::White 
+						&& _board[rowOffset][colOffset] != Piece::Black) {
 						actions.push_back(std::make_tuple(rowOffset, colOffset, pieceColor));
 					}
 				}
@@ -86,9 +89,34 @@ std::vector<Action> OthelloBoard::getValidActions(const char &player) {
 	return actions;
 }
 
+
+void OthelloBoard::clearAllActionHints() {
+	// clear all previous possible actions
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			if (_board[i][j] != Piece::White && _board[i][j] != Piece::Black) {
+				_board[i][j] = Piece::Empty;
+			}
+		}
+	}
+}
+
+void OthelloBoard::enableActionHints(std::vector<Action> &actions) {
+	clearAllActionHints();
+
+	// display possible actions
+	for (const auto& action : actions) {
+		const auto [row, col, _] = action;
+		_board[row][col] = Piece::Possible;
+	}
+
+}
+
 void OthelloBoard::performAction(Action action) {
 	const auto [row, col, pieceColor] = action;
 	const Piece oppositeColor = getOppositeColor(pieceColor);
+
+	clearAllActionHints();
 
 	bool flip[8][8];
 	for (auto& arr : flip) {
@@ -124,7 +152,7 @@ void OthelloBoard::performAction(Action action) {
 			}
 		}
 	}
-	
+
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			if (flip[i][j]) {
@@ -132,6 +160,30 @@ void OthelloBoard::performAction(Action action) {
 			}
 		}
 	}
-	
-	
+}
+
+bool OthelloBoard::isGameOver() {
+	// check that the board is all filled
+	int countEmpty = 0;
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			if (_board[i][j] == Piece::Empty) {
+				countEmpty++;
+			}
+		}
+	}
+	if (countEmpty == 64) {
+		return true;
+	}
+
+	// check that both players have no more possible moves
+	const char players[2] = { (char)Piece::Black, (char)Piece::White };
+	for (const auto& player : players) {
+		const auto actions = getValidActions(player);
+		if (!actions.empty()) {
+			return false;
+		}
+	}
+
+	return true;
 }

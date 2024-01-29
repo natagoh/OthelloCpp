@@ -148,7 +148,7 @@ void OthelloBoard::performAction(Action action) {
 					rowOffset -= i;
 					colOffset -= j;
 					flip[rowOffset][colOffset] = true;
-				} while (rowOffset != row && colOffset != col);
+				} while (rowOffset != row || colOffset != col);
 			}
 		}
 	}

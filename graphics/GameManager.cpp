@@ -43,7 +43,6 @@ void GameManager::processGameStep(const Player &player, bool isHuman) {
         _othello.printBoard();
 
         // render the board with hints
-       
         _othello.copyBoard(board);
         _gameView.renderGameState(_window, board);
         _window.display();

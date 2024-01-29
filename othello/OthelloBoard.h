@@ -7,6 +7,8 @@ enum class Piece {
 	Possible = '*',
 	White = 'O',
 	Black = 'X',
+	NewBlack = 'b',
+	NewWhite = 'w',
 };
 
 // an action consists of coordinates and the piece which will be placed there
@@ -18,14 +20,15 @@ class OthelloBoard
 private:
 	Piece _board[8][8];
 
-	// clears all action hints
-	void clearAllActionHints();
-
 public:
 	OthelloBoard::OthelloBoard();
 
 	// clears the board to the starting position
 	void clearBoard();
+
+
+	// clears all special pieces: action hints, new piece indicators
+	void clearSpecialPieces();
 
 	// prints the board state
 	void printBoard();

@@ -43,10 +43,21 @@ bool inRange(int i, int j) {
 	return (i < 0 || j < 0 || i >= 8 || j >= 8) ? false : true;
 }
 
+
+const bool isPieceWhite(const Piece& piece) {
+	return piece == Piece::White || piece == Piece::NewWhite;
+}
+
+const bool isPieceBlack(const Piece& piece) {
+	return piece == Piece::Black || piece == Piece::NewBlack;
+}
+
 Piece getOppositeColor(Piece pieceColor) {
 	return pieceColor == Piece::White ? Piece::Black : Piece::White;
 }
+
 std::vector<Action> OthelloBoard::getValidActions(const char &player) {
+
 	const Piece pieceColor = player == 'O' ? Piece::White : Piece::Black;
 	const Piece oppositeColor = getOppositeColor(pieceColor);
 
@@ -77,8 +88,8 @@ std::vector<Action> OthelloBoard::getValidActions(const char &player) {
 					}
 					if (moved 
 						&& inRange(rowOffset, colOffset) 
-						&& _board[rowOffset][colOffset] != Piece::White 
-						&& _board[rowOffset][colOffset] != Piece::Black) {
+						&& !isPieceWhite(_board[rowOffset][colOffset])
+						&& !isPieceBlack(_board[rowOffset][colOffset])) {
 						actions.push_back(std::make_tuple(rowOffset, colOffset, pieceColor));
 					}
 				}
@@ -90,19 +101,34 @@ std::vector<Action> OthelloBoard::getValidActions(const char &player) {
 }
 
 
-void OthelloBoard::clearAllActionHints() {
+void OthelloBoard::clearSpecialPieces() {
 	// clear all previous possible actions
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
-			if (_board[i][j] != Piece::White && _board[i][j] != Piece::Black) {
-				_board[i][j] = Piece::Empty;
+			switch (_board[i][j]) {
+				case Piece::NewWhite: {
+					_board[i][j] = Piece::White;
+					break;
+				}
+				case Piece::NewBlack: {
+					_board[i][j] = Piece::Black;
+					break;
+				}
+				case Piece::Possible: {
+					_board[i][j] = Piece::Empty;
+					break;
+				}
+				default: {
+					_board[i][j] = _board[i][j];
+					break;
+				}
 			}
 		}
 	}
 }
 
 void OthelloBoard::enableActionHints(std::vector<Action> &actions) {
-	clearAllActionHints();
+	clearSpecialPieces();
 
 	// display possible actions
 	for (const auto& action : actions) {
@@ -110,21 +136,19 @@ void OthelloBoard::enableActionHints(std::vector<Action> &actions) {
 		_board[row][col] = Piece::Possible;
 	}
 
+
 }
 
 void OthelloBoard::performAction(Action action) {
 	const auto [row, col, pieceColor] = action;
 	const Piece oppositeColor = getOppositeColor(pieceColor);
 
-	clearAllActionHints();
+	clearSpecialPieces();
 
 	bool flip[8][8];
 	for (auto& arr : flip) {
 		std::fill(std::begin(arr), std::end(arr), false);
 	}
-
-	// place the piece at (row, col) on the board
-	flip[row][col] = true;
 
 	// search all eight directions for opposite color pieces
 	for (int i = -1; i <= 1; i++) {
@@ -153,6 +177,7 @@ void OthelloBoard::performAction(Action action) {
 		}
 	}
 
+	// flip the other pieces
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			if (flip[i][j]) {
@@ -160,6 +185,10 @@ void OthelloBoard::performAction(Action action) {
 			}
 		}
 	}
+
+	// place the piece at (row, col) on the board
+	const auto newPieceColor = pieceColor == Piece::White ? Piece::NewWhite : Piece::NewBlack;
+	_board[row][col] = newPieceColor;
 }
 
 bool OthelloBoard::isGameOver() {

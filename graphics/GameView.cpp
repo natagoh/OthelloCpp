@@ -70,33 +70,62 @@ void GameView::renderGameGrid(sf::RenderWindow& window) {
 }
 
 void GameView::renderPiece(sf::RenderWindow& window, Piece color, int row, int col) {
-    // draw a circle
-    sf::CircleShape piece(_pieceRadius);
-
-    // set origin to be at center of circle
-    piece.setOrigin(sf::Vector2f(_pieceRadius, _pieceRadius));
-
     // draw a circle at position (row, col) on the board
     const float rowPos = _boardSquareSize / 2 + _boardSquareSize * row;
     const float colPos = _boardSquareSize / 2 + _boardSquareSize * col;
-    piece.setPosition(sf::Vector2f(colPos, rowPos));
+   
+    // for ease of calculation, set origin to be at center of circle
+    // black piece
+    sf::CircleShape blackPiece(_pieceRadius);
+    blackPiece.setOrigin(sf::Vector2f(_pieceRadius, _pieceRadius));
+    blackPiece.setPosition(sf::Vector2f(colPos, rowPos));
+    blackPiece.setFillColor(sf::Color::Black);
+
+    // white piece
+    sf::CircleShape whitePiece(_pieceRadius);
+    whitePiece.setOrigin(sf::Vector2f(_pieceRadius, _pieceRadius));
+    whitePiece.setPosition(sf::Vector2f(colPos, rowPos));
+    whitePiece.setFillColor(sf::Color::White);
+    whitePiece.setOutlineColor(sf::Color::Black);
+    whitePiece.setOutlineThickness(1);
+
+    // gray piece for possible moves
+    sf::CircleShape possiblePiece(_pieceRadius);
+    possiblePiece.setOrigin(sf::Vector2f(_pieceRadius, _pieceRadius));
+    possiblePiece.setPosition(sf::Vector2f(colPos, rowPos));
+    possiblePiece.setFillColor(sf::Color(0, 0, 0, 0.25 * 255));
+
+    // bullseye for new pieces
+    sf::CircleShape bullseye(4);
+    bullseye.setOrigin(sf::Vector2f(4, 4));
+    bullseye.setFillColor(sf::Color::Red);
+    bullseye.setPosition(sf::Vector2f(colPos, rowPos));
 
     switch (color) {
         case Piece::Black: {
-            piece.setFillColor(sf::Color::Black);
-            window.draw(piece);
+            window.draw(blackPiece);
             break;
         }
         case Piece::White: {
-            piece.setFillColor(sf::Color::White);
-            piece.setOutlineColor(sf::Color::Black);
-            piece.setOutlineThickness(1);
-            window.draw(piece);
+            window.draw(whitePiece);
+            break;
+        }
+        case Piece::NewBlack: {
+            window.draw(blackPiece);
+
+            // draw a red bullseye in the center
+            window.draw(bullseye);
+            break;
+        }
+        case Piece::NewWhite: {
+            window.draw(whitePiece);
+
+            // draw a red bullseye in the center
+            window.draw(bullseye);
             break;
         }
         case Piece::Possible: {
-            piece.setFillColor(sf::Color(0, 0, 0, 0.25 * 255));
-            window.draw(piece);
+            window.draw(possiblePiece);
             break;
         }
         case Piece::Empty: 

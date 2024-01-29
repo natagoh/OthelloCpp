@@ -7,19 +7,19 @@ OthelloBoard::OthelloBoard() {
 }
 
 void OthelloBoard::clearBoard() {
-	for (auto& arr : board)
+	for (auto& arr : _board)
 		std::fill(std::begin(arr), std::end(arr), Piece::Empty);
-	board[3][3] = Piece::White;
-	board[3][4] = Piece::Black;
-	board[4][3] = Piece::Black;
-	board[4][4] = Piece::White;
+	_board[3][3] = Piece::White;
+	_board[3][4] = Piece::Black;
+	_board[4][3] = Piece::Black;
+	_board[4][4] = Piece::White;
 
 }
 
 void OthelloBoard::printBoard() {
-	for (int i = 0; i < std::size(board); i++) {
-		for (int j = 0; j < std::size(board[0]); j++) {
-			printf("%c ", board[i][j]);
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			printf("%c ", _board[i][j]);
 		}
 		printf("\n");
 	}
@@ -27,15 +27,15 @@ void OthelloBoard::printBoard() {
 }
 
 void OthelloBoard::setBoard(const Piece val[][8]) {
-	for (int i = 0; i < std::size(board); i++) {
-		for (int j = 0; j < std::size(board[0]); j++) {
-			board[i][j] = val[i][j];
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			_board[i][j] = val[i][j];
 		}
 	}
 }
 
 void OthelloBoard::copyBoard(Piece dest[][8]) {
-	std::memcpy(dest, board, 8 * 8 * sizeof(Piece));
+	std::memcpy(dest, _board, 8 * 8 * sizeof(Piece));
 }
 
 
@@ -54,7 +54,7 @@ std::vector<Action> OthelloBoard::getValidActions(const char &player) {
 	actions.reserve(8);
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
-			if (board[i][j] != pieceColor) {
+			if (_board[i][j] != pieceColor) {
 				continue;
 			}
 
@@ -70,12 +70,12 @@ std::vector<Action> OthelloBoard::getValidActions(const char &player) {
 					int rowOffset = i + k;
 					int colOffset = j + l;
 					bool moved = false;
-					while (inRange(rowOffset, colOffset) && board[rowOffset][colOffset] == oppositeColor) {
+					while (inRange(rowOffset, colOffset) && _board[rowOffset][colOffset] == oppositeColor) {
 						rowOffset += k;
 						colOffset += l;
 						moved = true;
 					}
-					if (moved && inRange(rowOffset, colOffset) && board[rowOffset][colOffset] == Piece::Empty) {
+					if (moved && inRange(rowOffset, colOffset) && _board[rowOffset][colOffset] == Piece::Empty) {
 						actions.push_back(std::make_tuple(rowOffset, colOffset, pieceColor));
 					}
 				}
@@ -109,13 +109,13 @@ void OthelloBoard::performAction(Action action) {
 			// keep searching in the given i, j offset direction
 			int rowOffset = row + i;
 			int colOffset = col + j;
-			while (inRange(rowOffset, colOffset) && board[rowOffset][colOffset] == oppositeColor) {
+			while (inRange(rowOffset, colOffset) && _board[rowOffset][colOffset] == oppositeColor) {
 				rowOffset += i;
 				colOffset += j;
 			}
 
 			// found matching end piece, so we can flip
-			if (board[rowOffset][colOffset] == pieceColor) {
+			if (_board[rowOffset][colOffset] == pieceColor) {
 				do {
 					rowOffset -= i;
 					colOffset -= j;
@@ -128,7 +128,7 @@ void OthelloBoard::performAction(Action action) {
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			if (flip[i][j]) {
-				board[i][j] = pieceColor;
+				_board[i][j] = pieceColor;
 			}
 		}
 	}

@@ -16,7 +16,7 @@ class OthelloBoard
 {
 
 private:
-	Piece board[8][8];
+	Piece _board[8][8];
 
 public:
 	OthelloBoard::OthelloBoard();
@@ -38,7 +38,4 @@ public:
 
 	// flips pieces given a valid action
 	void performAction(Action action);
-
-	// gets the board state after applying the given action
-	Piece** getNextBoardState(Action action);
 };

@@ -11,6 +11,13 @@ GameView::GameView() :
     _boardSquareSize((_pieceRadius + _pieceBuffer) * 2 ), 
     _boardSize(8 * _boardSquareSize) {}
 
+const float GameView::getBoardSize() {
+    return _boardSize;
+}
+
+const float GameView::getBoardSquareSize() {
+    return _boardSquareSize;
+}
 
 void GameView::renderGameGrid(sf::RenderWindow& window) {
    /*

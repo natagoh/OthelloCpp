@@ -16,4 +16,7 @@ public:
 	GameView::GameView();
 
 	void renderGameState(sf::RenderWindow& window, Piece board[8][8]);
+
+	const float getBoardSquareSize();
+	const float getBoardSize();
 };

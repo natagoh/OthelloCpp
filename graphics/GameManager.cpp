@@ -1,84 +1,120 @@
 #include "GameManager.h"
-#include "GameView.h"
 #include <SFML/Window/Mouse.hpp>
-#include <SFML/Graphics.hpp>
 
-GameManager::GameManager(OthelloBoard &othello) : _othello(othello) {}
+GameManager::GameManager(OthelloBoard &othello) : 
+    _othello(othello), 
+    _gameView(GameView()),
+    _window(sf::VideoMode(1080u, 1080u, 32), "Othello") {
+    const float boardSize = _gameView.getBoardSize();
+    // _window.setSize(sf::Vector2u(boardSize, boardSize));
+    _window.setFramerateLimit(60);
+}
 
-void GameManager::processGameStep(const Player &player) {
+std::optional<Action> GameManager::getHumanAction(std::vector<Action> actions) {
+    // figure out which square the mouse is clicking
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+        sf::Vector2i position = sf::Mouse::getPosition(_window);
+        const float boardSquareSize = _gameView.getBoardSquareSize();
+        const int row = position.y / boardSquareSize;
+        const int col = position.x / boardSquareSize;
+
+        for (const auto& action : actions) {
+            const auto &[i, j, _] = action;
+            if (row == i && col == j) {
+                return action;
+            }
+        }
+    }
+   
+    return std::nullopt;
+}
+
+void GameManager::processGameStep(const Player &player, bool isHuman) {
 	printf("player %c turn\n", player.color);
 	auto actions = _othello.getValidActions((char)player.color);
     if (actions.empty()) {
         return;
     }
+    Piece board[8][8];
+    Action action;
+    if (isHuman) {
+        // show the action hints
+        _othello.enableActionHints(actions);
+        _othello.printBoard();
 
-	// show the action hints
-	_othello.enableActionHints(actions);
-	_othello.printBoard();
+        // render the board with hints
+       
+        _othello.copyBoard(board);
+        _gameView.renderGameState(_window, board);
+        _window.display();
 
-	// pick a random action
-	int idx = rand() % actions.size();
-	Action action = actions[idx];
+        auto humanAction = getHumanAction(actions);
+        while (!humanAction.has_value()) {
+            humanAction = getHumanAction(actions);
+        }
+        action = humanAction.value();
+    }
+    else {
 
+        // pick a random action
+        int idx = rand() % actions.size();
+        action = actions[idx];
+    }
+
+	
 	_othello.performAction(action);
 	_othello.printBoard();
+
+    // render the board after a move
+    _othello.copyBoard(board);
+    _gameView.renderGameState(_window, board);
+    _window.display();
+
+
+    // delay for some time
+
+    // starts the clock
+    sf::Clock clock;
+    while (clock.getElapsedTime().asSeconds() <= 1) {
+        continue;
+    }
+    clock.restart();
 
 }
 
 void GameManager::processGameLoop() {
-	// create the window
-	auto window = sf::RenderWindow{ { 1080u, 1080u }, "Othello" };
-	window.setFramerateLimit(60);
-
-
-    GameView gameView = GameView();
-
-    // starts the clock
-    sf::Clock clock; 
-
     int playerIdx = 0;
 
     // run the program as long as the window is open
-    while (window.isOpen())
+    while (_window.isOpen())
     {
         // check all the window's events that were triggered since the last iteration of the loop
         sf::Event event;
-        while (window.pollEvent(event))
+        while (_window.pollEvent(event))
         {
             // "close requested" event: we close the window
             if (event.type == sf::Event::Closed)
-                window.close();
+                _window.close();
         }
 
         // clear the window with black color
-        window.clear(sf::Color::Black);
+        _window.clear(sf::Color::Black);
 
         // render current board state
         Piece board[8][8];
         _othello.copyBoard(board);
-        gameView.renderGameState(window, board);
-
-        // measure time elapsed
-        float elapsedSeconds = clock.getElapsedTime().asSeconds();
-        if (elapsedSeconds <= 1) {
-            window.display();
-            continue;
-        }
-        clock.restart();
+        _gameView.renderGameState(_window, board);
+        _window.display();
 
         if (_othello.isGameOver()) {
             printf("GAME OVER\n");
         } else {
             // player does an action
-            processGameStep(_players[playerIdx]);
+            // for now Human plays Black
+            const auto player = _players[playerIdx];
+            processGameStep(player, player.color == Piece::Black);
             playerIdx++;
             playerIdx %= 2;
         }
-
-        // figure out which square the mouse is clicking
-        sf::Vector2i position = sf::Mouse::getPosition(window);
-        printf("mouse pos: %i, %i\n", position.x, position.y);
-        // end the current frame
-       
     }
 }

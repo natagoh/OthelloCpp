@@ -65,8 +65,10 @@ void GameView::renderGameGrid(sf::RenderWindow& window) {
     const sf::Texture& boardTexture = renderTexture.getTexture();
 
     // draw game grid to the window
-    sf::Sprite boardSprite(boardTexture);
-    window.draw(boardSprite);
+    sf::RectangleShape boardTextureRect(sf::Vector2f(_boardSize, _boardSize));
+    boardTextureRect.setTexture(&boardTexture);
+    //sf::Sprite boardSprite(boardTexture);
+    window.draw(boardTextureRect);
 }
 
 void GameView::renderPiece(sf::RenderWindow& window, Piece color, int row, int col) {

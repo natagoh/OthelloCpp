@@ -92,9 +92,9 @@ std::vector<Action> OthelloBoard::getValidActions(const char& player) {
 					int colOffset = j + l;
 					bool moved = false;
 					while (
-						inRange(rowOffset, colOffset) 
+						inRange(rowOffset, colOffset)
 						&& reducedPieceColor.at(_board[rowOffset][colOffset]) == oppositeColor
-					) {
+						) {
 						rowOffset += k;
 						colOffset += l;
 						moved = true;
@@ -117,22 +117,21 @@ void OthelloBoard::clearSpecialPieces(bool keepRecentMove) {
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			switch (_board[i][j]) {
-			case Piece::NewWhite: {
+			case Piece::NewWhite:
 				_board[i][j] = keepRecentMove ? Piece::NewWhite : Piece::White;
 				break;
-			}
-			case Piece::NewBlack: {
+
+			case Piece::NewBlack:
 				_board[i][j] = keepRecentMove ? Piece::NewBlack : Piece::Black;
 				break;
-			}
-			case Piece::Possible: {
+
+			case Piece::Possible:
 				_board[i][j] = Piece::Empty;
 				break;
-			}
-			default: {
+
+			default:
 				_board[i][j] = _board[i][j];
 				break;
-			}
 			}
 		}
 	}

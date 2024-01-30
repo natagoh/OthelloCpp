@@ -104,36 +104,36 @@ void GameView::renderPiece(sf::RenderWindow& window, Piece color, int row, int c
 	bullseye.setPosition(sf::Vector2f(colPos, rowPos));
 
 	switch (color) {
-	case Piece::Black: {
+	case Piece::Black:
 		window.draw(blackPiece);
 		break;
-	}
-	case Piece::White: {
+
+	case Piece::White:
 		window.draw(whitePiece);
 		break;
-	}
-	case Piece::NewBlack: {
+
+	case Piece::NewBlack:
 		window.draw(blackPiece);
 
 		// draw a red bullseye in the center
 		window.draw(bullseye);
 		break;
-	}
-	case Piece::NewWhite: {
+
+	case Piece::NewWhite:
 		window.draw(whitePiece);
 
 		// draw a red bullseye in the center
 		window.draw(bullseye);
 		break;
-	}
-	case Piece::Possible: {
+
+	case Piece::Possible:
 		window.draw(possiblePiece);
 		break;
-	}
+
 	case Piece::Empty:
-	default: {
+	default:
 		break;
-	}
+
 	}
 }
 

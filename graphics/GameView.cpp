@@ -138,9 +138,12 @@ void GameView::renderPiece(sf::RenderWindow& window, Piece color, int row, int c
 }
 
 
-void GameView::renderGameState(sf::RenderWindow& window, Piece board[8][8]) {
+void GameView::renderGameState(sf::RenderWindow& window, OthelloBoard& othello) {
 	// render the game grid
 	renderGameGrid(window);
+
+	Piece board[8][8];
+	othello.copyBoard(board);
 
 	// render the pieces
 	for (int row = 0; row < 8; row++) {

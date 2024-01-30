@@ -49,23 +49,20 @@ GameStepOutcome GameManager::gameStep(
 	bool isHuman,
 	const std::optional<sf::Vector2i>& mousePos
 ) {
-	//printf("player %c turn\n", player.color);
-
 	auto actions = _othello.getValidActions((char)player.color);
 	if (actions.empty()) {
+		// no valid actions, skip turn
 		return GameStepOutcome::Action;
 	}
-	Piece board[8][8];
-	Action action;
 
+	Action action;
 	if (isHuman) {
 		// show the action hints
 		_othello.enableActionHints(actions);
 		//_othello.printBoard();
 
 		// render the board with hints
-		_othello.copyBoard(board);
-		_gameView.renderGameState(_window, board);
+		_gameView.renderGameState(_window, _othello);
 		_window.display();
 
 		auto humanAction = getHumanAction(actions, mousePos);
@@ -90,14 +87,9 @@ GameStepOutcome GameManager::gameStep(
 	_othello.performAction(action);
 	_othello.printBoard();
 
-	// render the board after a move
-	//_othello.copyBoard(board);
-	//_gameView.renderGameState(_window, board);
-	//_window.display();
-
+	// render the board after a move?
 
 	return GameStepOutcome::Action;
-
 }
 
 void GameManager::pollWindowEvent() {
@@ -151,13 +143,9 @@ void GameManager::gameLoop() {
 		// clear the window with black color
 		_window.clear(sf::Color::Black);
 
-		// render initial board state
-		Piece board[8][8];
-		_othello.copyBoard(board);
-		_gameView.renderGameState(_window, board);
+		// render board state
+		_gameView.renderGameState(_window, _othello);
 		_window.display();
-
-		
 
 		// check for human board input
 		const std::optional<sf::Vector2i> mouseClickPos = getMouseClickPos();

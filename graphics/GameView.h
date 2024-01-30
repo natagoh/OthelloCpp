@@ -15,7 +15,8 @@ private:
 public:
 	GameView::GameView();
 
-	void renderGameState(sf::RenderWindow& window, Piece board[8][8]);
+	// renders the current game state to the window
+	void renderGameState(sf::RenderWindow& window, OthelloBoard& othello);
 
 	const float getBoardSquareSize();
 	const float getBoardSize();

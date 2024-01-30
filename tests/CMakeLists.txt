@@ -14,13 +14,21 @@ add_library(GTest::GTest INTERFACE IMPORTED)
 target_link_libraries(GTest::GTest INTERFACE gtest_main)
 
 add_executable(othello_board_test OthelloBoardTest.cpp)
-
 target_link_libraries(
   othello_board_test
   PRIVATE
   GTest::GTest
   othello_lib
 )
+
+add_executable(othello_get_actions_test OthelloGetActionsTest.cpp)
+target_link_libraries(
+  othello_get_actions_test
+  PRIVATE
+  GTest::GTest
+  othello_lib
+)
+
 
 # gtest_discover_tests(othello_board_test)
 add_test(othello_board_gtest othello_board_test)

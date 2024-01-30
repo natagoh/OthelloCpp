@@ -26,10 +26,9 @@ public:
 	// clears the board to the starting position
 	void clearBoard();
 
-
 	// clears all special pieces: action hints, new piece indicators
 	// option to keep recent moves
-	void clearSpecialPieces(bool keepRecentMove = false);
+	void clearSpecialPieces(const bool keepRecentMove = false);
 
 	// prints the board state
 	void printBoard();
@@ -44,10 +43,10 @@ public:
 	std::vector<Action> getValidActions(const char &player);
 
 	// show action hints on the board
-	void enableActionHints(std::vector<Action> &actions);
+	void enableActionHints(const std::vector<Action> &actions);
 
 	// flips pieces given a valid action
-	void performAction(Action action);
+	void performAction(const Action &action);
 
 	// checks if the game is over (no more possible actions for either player)
 	bool isGameOver();

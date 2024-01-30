@@ -4,7 +4,7 @@
 GameManager::GameManager(OthelloBoard &othello) : 
     _othello(othello), 
     _gameView(GameView()),
-    _window(sf::VideoMode(1080u, 1080u), "Othello") {
+    _window(sf::VideoMode(1080u, 1080u), "Othello", sf::Style::Titlebar | sf::Style::Close) {
     const float boardSize = _gameView.getBoardSize();
     _window.create(sf::VideoMode(boardSize, boardSize, 32), "Othello");
     _window.setFramerateLimit(60);

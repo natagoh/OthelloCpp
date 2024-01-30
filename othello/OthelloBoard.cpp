@@ -1,6 +1,7 @@
 #include "OthelloBoard.h"
-#include<tuple> 
+#include <tuple> 
 #include <cstring>
+#include <set>
 
 OthelloBoard::OthelloBoard() {
 	this->clearBoard();
@@ -44,19 +45,12 @@ bool inRange(int i, int j) {
 }
 
 
-const bool isPieceWhite(const Piece& piece) {
-	return piece == Piece::White || piece == Piece::NewWhite;
-}
-
-const bool isPieceBlack(const Piece& piece) {
-	return piece == Piece::Black || piece == Piece::NewBlack;
-}
-
-Piece getOppositeColor(Piece pieceColor) {
+Piece getOppositeColor(const Piece &pieceColor) {
 	return pieceColor == Piece::White ? Piece::Black : Piece::White;
 }
 
 std::vector<Action> OthelloBoard::getValidActions(const char &player) {
+	clearSpecialPieces();
 
 	const Piece pieceColor = player == 'O' ? Piece::White : Piece::Black;
 	const Piece oppositeColor = getOppositeColor(pieceColor);
@@ -81,15 +75,17 @@ std::vector<Action> OthelloBoard::getValidActions(const char &player) {
 					int rowOffset = i + k;
 					int colOffset = j + l;
 					bool moved = false;
-					while (inRange(rowOffset, colOffset) && _board[rowOffset][colOffset] == oppositeColor) {
+					while (inRange(rowOffset, colOffset) 
+						&& _board[rowOffset][colOffset] == oppositeColor
+					) {
 						rowOffset += k;
 						colOffset += l;
 						moved = true;
 					}
 					if (moved 
 						&& inRange(rowOffset, colOffset) 
-						&& !isPieceWhite(_board[rowOffset][colOffset])
-						&& !isPieceBlack(_board[rowOffset][colOffset])) {
+						&& _board[rowOffset][colOffset] != Piece::White
+						&& _board[rowOffset][colOffset] != Piece::Black) {
 						actions.push_back(std::make_tuple(rowOffset, colOffset, pieceColor));
 					}
 				}
@@ -127,7 +123,7 @@ void OthelloBoard::clearSpecialPieces(bool keepRecentMove) {
 	}
 }
 
-void OthelloBoard::enableActionHints(std::vector<Action> &actions) {
+void OthelloBoard::enableActionHints(const std::vector<Action> &actions) {
 	const bool keepRecentMove = true;
 	clearSpecialPieces(keepRecentMove);
 
@@ -140,7 +136,7 @@ void OthelloBoard::enableActionHints(std::vector<Action> &actions) {
 
 }
 
-void OthelloBoard::performAction(Action action) {
+void OthelloBoard::performAction(const Action &action) {
 	const auto [row, col, pieceColor] = action;
 	const Piece oppositeColor = getOppositeColor(pieceColor);
 
@@ -168,7 +164,7 @@ void OthelloBoard::performAction(Action action) {
 			}
 
 			// found matching end piece, so we can flip
-			if (_board[rowOffset][colOffset] == pieceColor) {
+			if (inRange(rowOffset, colOffset) && _board[rowOffset][colOffset] == pieceColor) {
 				do {
 					rowOffset -= i;
 					colOffset -= j;

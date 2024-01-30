@@ -44,7 +44,7 @@ const std::optional<Action> GameManager::getHumanAction(
 	return std::nullopt;
 }
 
-GameStepOutcome GameManager::processGameStep(
+GameStepOutcome GameManager::gameStep(
 	const Player& player,
 	bool isHuman,
 	const std::optional<sf::Vector2i>& mousePos
@@ -135,7 +135,7 @@ void GameManager::pollWindowEvent() {
 	}
 }
 
-void GameManager::processGameLoop() {
+void GameManager::gameLoop() {
 	int playerIdx = 0;
 
 	sf::Clock clock;
@@ -169,7 +169,7 @@ void GameManager::processGameLoop() {
 			// player does an action
 			// for now Human plays Black
 			const auto player = _players[playerIdx];
-			const auto gameStepOutcome = processGameStep(player, player.color == Piece::White, mouseClickPos);
+			const auto gameStepOutcome = gameStep(player, player.color == Piece::White, mouseClickPos);
 			if (gameStepOutcome == GameStepOutcome::Action) {
 				playerIdx++;
 				playerIdx %= 2;

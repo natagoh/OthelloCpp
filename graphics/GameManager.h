@@ -33,7 +33,7 @@ private:
 	);
 	const std::optional<sf::Vector2i> GameManager::getMouseClickPos();
 
-	GameStepOutcome processGameStep(
+	GameStepOutcome gameStep(
 		const Player& player, 
 		bool isHuman = false, 
 		const std::optional<sf::Vector2i> &mousePos = std::nullopt
@@ -44,6 +44,6 @@ private:
 public:
 	GameManager::GameManager(OthelloBoard &othello);
 
-	void processGameLoop();
+	void gameLoop();
 
 };

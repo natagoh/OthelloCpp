@@ -8,7 +8,7 @@ int main()
 {
     OthelloBoard othello = OthelloBoard();
     GameManager gameManager = GameManager(othello);
-    gameManager.processGameLoop();
+    gameManager.gameLoop();
 
     return 0;
 }

@@ -38,7 +38,8 @@ private:
 		bool isHuman = false, 
 		const std::optional<sf::Vector2i> &mousePos = std::nullopt
 	);
-
+	
+	void pollWindowEvent();
 
 public:
 	GameManager::GameManager(OthelloBoard &othello);

@@ -2,6 +2,7 @@
 #include <tuple> 
 #include <cstring>
 #include <set>
+#include <unordered_map>
 
 OthelloBoard::OthelloBoard() {
 	this->clearBoard();
@@ -50,10 +51,25 @@ Piece getOppositeColor(const Piece& pieceColor) {
 }
 
 std::vector<Action> OthelloBoard::getValidActions(const char& player) {
-	clearSpecialPieces();
 
 	const Piece pieceColor = player == 'O' ? Piece::White : Piece::Black;
-	const Piece oppositeColor = getOppositeColor(pieceColor);
+
+	const std::set<Piece> coloredPieces = { Piece::White, Piece::NewWhite, Piece::Black, Piece::NewBlack };
+	const std::unordered_map<Piece, Piece> oppositePieceColor = {
+		{Piece::White, Piece::Black},
+		{Piece::NewWhite, Piece::Black},
+		{Piece::Black, Piece::White},
+		{Piece::NewBlack, Piece::White},
+	};
+	const std::unordered_map<Piece, Piece> reducedPieceColor = {
+		{Piece::White, Piece::White},
+		{Piece::NewWhite, Piece::White},
+		{Piece::Black, Piece::Black},
+		{Piece::NewBlack, Piece::Black},
+		{Piece::Possible, Piece::Possible},
+		{Piece::Empty, Piece::Empty},
+	};
+	const Piece oppositeColor = oppositePieceColor.at(pieceColor);
 
 	std::vector<Action> actions;
 	actions.reserve(8);
@@ -75,17 +91,16 @@ std::vector<Action> OthelloBoard::getValidActions(const char& player) {
 					int rowOffset = i + k;
 					int colOffset = j + l;
 					bool moved = false;
-					while (inRange(rowOffset, colOffset)
-						&& _board[rowOffset][colOffset] == oppositeColor
-						) {
+					while (
+						inRange(rowOffset, colOffset) 
+						&& reducedPieceColor.at(_board[rowOffset][colOffset]) == oppositeColor
+					) {
 						rowOffset += k;
 						colOffset += l;
 						moved = true;
 					}
-					if (moved
-						&& inRange(rowOffset, colOffset)
-						&& _board[rowOffset][colOffset] != Piece::White
-						&& _board[rowOffset][colOffset] != Piece::Black) {
+					const bool isColoredPiece = coloredPieces.find(_board[rowOffset][colOffset]) != coloredPieces.end();
+					if (moved && inRange(rowOffset, colOffset) && !isColoredPiece) {
 						actions.push_back(std::make_tuple(rowOffset, colOffset, pieceColor));
 					}
 				}

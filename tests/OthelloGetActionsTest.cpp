@@ -29,7 +29,7 @@ TEST(OthelloGetActionsTest, TestGetAllPossibleActions) {
 	};
 
 	const Piece expectedBoard[8][8] = {
-		{ Piece::Possible, Piece::White, Piece::Black, Piece::Empty, Piece::Empty, Piece::Empty, Piece::Empty, Piece::Empty },
+		{ Piece::Possible, Piece::NewWhite, Piece::Black, Piece::Empty, Piece::Empty, Piece::Empty, Piece::Empty, Piece::Empty },
 		{ Piece::Empty, Piece::Empty, Piece::Empty, Piece::Empty, Piece::Empty, Piece::Empty, Piece::Empty, Piece::Empty },
 		{ Piece::Empty, Piece::Empty, Piece::Empty, Piece::Empty, Piece::Empty, Piece::Empty, Piece::Empty, Piece::Empty },
 		{ Piece::Empty, Piece::Empty, Piece::Empty, Piece::Empty, Piece::Empty, Piece::Empty, Piece::Empty, Piece::Empty },

@@ -45,11 +45,11 @@ bool inRange(int i, int j) {
 }
 
 
-Piece getOppositeColor(const Piece &pieceColor) {
+Piece getOppositeColor(const Piece& pieceColor) {
 	return pieceColor == Piece::White ? Piece::Black : Piece::White;
 }
 
-std::vector<Action> OthelloBoard::getValidActions(const char &player) {
+std::vector<Action> OthelloBoard::getValidActions(const char& player) {
 	clearSpecialPieces();
 
 	const Piece pieceColor = player == 'O' ? Piece::White : Piece::Black;
@@ -75,15 +75,15 @@ std::vector<Action> OthelloBoard::getValidActions(const char &player) {
 					int rowOffset = i + k;
 					int colOffset = j + l;
 					bool moved = false;
-					while (inRange(rowOffset, colOffset) 
+					while (inRange(rowOffset, colOffset)
 						&& _board[rowOffset][colOffset] == oppositeColor
-					) {
+						) {
 						rowOffset += k;
 						colOffset += l;
 						moved = true;
 					}
-					if (moved 
-						&& inRange(rowOffset, colOffset) 
+					if (moved
+						&& inRange(rowOffset, colOffset)
 						&& _board[rowOffset][colOffset] != Piece::White
 						&& _board[rowOffset][colOffset] != Piece::Black) {
 						actions.push_back(std::make_tuple(rowOffset, colOffset, pieceColor));
@@ -102,28 +102,28 @@ void OthelloBoard::clearSpecialPieces(bool keepRecentMove) {
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			switch (_board[i][j]) {
-				case Piece::NewWhite: {
-					_board[i][j] = keepRecentMove ? Piece::NewWhite : Piece::White;
-					break;
-				}
-				case Piece::NewBlack: {
-					_board[i][j] = keepRecentMove ? Piece::NewBlack : Piece::Black;
-					break;
-				}
-				case Piece::Possible: {
-					_board[i][j] = Piece::Empty;
-					break;
-				}
-				default: {
-					_board[i][j] = _board[i][j];
-					break;
-				}
+			case Piece::NewWhite: {
+				_board[i][j] = keepRecentMove ? Piece::NewWhite : Piece::White;
+				break;
+			}
+			case Piece::NewBlack: {
+				_board[i][j] = keepRecentMove ? Piece::NewBlack : Piece::Black;
+				break;
+			}
+			case Piece::Possible: {
+				_board[i][j] = Piece::Empty;
+				break;
+			}
+			default: {
+				_board[i][j] = _board[i][j];
+				break;
+			}
 			}
 		}
 	}
 }
 
-void OthelloBoard::enableActionHints(const std::vector<Action> &actions) {
+void OthelloBoard::enableActionHints(const std::vector<Action>& actions) {
 	const bool keepRecentMove = true;
 	clearSpecialPieces(keepRecentMove);
 
@@ -136,7 +136,7 @@ void OthelloBoard::enableActionHints(const std::vector<Action> &actions) {
 
 }
 
-void OthelloBoard::performAction(const Action &action) {
+void OthelloBoard::performAction(const Action& action) {
 	const auto [row, col, pieceColor] = action;
 	const Piece oppositeColor = getOppositeColor(pieceColor);
 

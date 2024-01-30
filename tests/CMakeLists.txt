@@ -32,4 +32,5 @@ target_link_libraries(
 
 # gtest_discover_tests(othello_board_test)
 add_test(othello_board_gtest othello_board_test)
+add_test(othello_get_actions_gtest othello_get_actions_test)
 

@@ -21,7 +21,7 @@ private:
 	Piece _board[8][8];
 
 public:
-	OthelloBoard::OthelloBoard();
+	OthelloBoard();
 
 	// clears the board to the starting position
 	void clearBoard();

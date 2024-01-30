@@ -27,11 +27,11 @@ private:
 	sf::Clock _clock;
 
 	// gets action for human turn out of possible actions provided
-	const std::optional<Action> GameManager::getHumanAction(
+	const std::optional<Action> getHumanAction(
 		std::vector<Action> actions, 
 		std::optional<sf::Vector2i> mousePos
 	);
-	const std::optional<sf::Vector2i> GameManager::getMouseClickPos();
+	const std::optional<sf::Vector2i> getMouseClickPos();
 
 	GameStepOutcome gameStep(
 		const Player& player, 
@@ -42,7 +42,7 @@ private:
 	void pollWindowEvent();
 
 public:
-	GameManager::GameManager(OthelloBoard &othello);
+	GameManager(OthelloBoard &othello);
 
 	void gameLoop();
 

@@ -13,7 +13,7 @@ private:
 	void renderPiece(sf::RenderWindow& window, Piece color, int row, int col);
 
 public:
-	GameView::GameView();
+	GameView();
 
 	// renders the current game state to the window
 	void renderGameState(sf::RenderWindow& window, OthelloBoard& othello);

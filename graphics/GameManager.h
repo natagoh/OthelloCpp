@@ -14,8 +14,8 @@ struct Player {
 
 
 enum class GameStepOutcome {
-	Complete,	// player finished their turn, supplied an action
-	Incomplete,	// still waiting for player to finish their turn and supply an action
+	Action,		// player finished their turn, supplied an action
+	Pending,	// still waiting for player to finish their turn and supply an action
 };
 class GameManager {
 private:
@@ -25,12 +25,19 @@ private:
 	sf::RenderWindow _window;
 	GameView _gameView;
 	sf::Clock _clock;
-	sf::Clock _gameClock;
 
 	// gets action for human turn out of possible actions provided
-	std::optional<Action> GameManager::getHumanAction(std::vector<Action> actions);
+	const std::optional<Action> GameManager::getHumanAction(
+		std::vector<Action> actions, 
+		std::optional<sf::Vector2i> mousePos
+	);
+	const std::optional<sf::Vector2i> GameManager::getMouseClickPos();
 
-	GameStepOutcome processGameStep(const Player& player, bool isHuman = false);
+	GameStepOutcome processGameStep(
+		const Player& player, 
+		bool isHuman = false, 
+		const std::optional<sf::Vector2i> &mousePos = std::nullopt
+	);
 
 
 public:

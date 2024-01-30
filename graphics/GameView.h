@@ -18,6 +18,9 @@ public:
 	// renders the current game state to the window
 	void renderGameState(sf::RenderWindow& window, OthelloBoard& othello);
 
+	// renders the game over screen
+	void renderGameOver(sf::RenderWindow& window, OthelloBoard& othello);
+	
 	const float getBoardSquareSize();
 	const float getBoardSize();
 };

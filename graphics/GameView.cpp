@@ -1,8 +1,12 @@
 #include "GameView.h"
+#include "SFML/Graphics/Shader.hpp"
+#include "SFML/System/Vector2.hpp"
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
+#include <filesystem>
+#include <iostream>
 
 
 GameView::GameView() :
@@ -151,4 +155,49 @@ void GameView::renderGameState(sf::RenderWindow& window, OthelloBoard& othello) 
 			renderPiece(window, board[row][col], row, col);
 		}
 	}
+
+	window.display();
+}
+
+
+void GameView::renderGameOver(sf::RenderWindow& window, OthelloBoard& othello) {
+	sf::Shader shader = sf::Shader{};
+	 if (!sf::Shader::isAvailable() ) {
+		std::cerr << "Shader not available\n";
+		return; 
+	 }
+    if (!shader.loadFromFile("shaders/GaussianBlur.frag", sf::Shader::Fragment)) {
+        std::cerr << "Couldn't load fragment shader\n";
+		return;
+    }
+	shader.setUniform("u_xyBlurRadius", sf::Glsl::Vec2{ sf::Vector2f(0.05f, 0.05f) });
+
+
+	// create a render texture for the board
+	sf::RenderTexture renderTexture;
+	if (!renderTexture.create(_boardSize, _boardSize)) {
+		printf("Error creating render texture\n");
+	}
+
+	// drawing uses the same functions
+	renderTexture.clear();
+
+	// draw board rectangle
+	const float gameOverScreenSize = 100.f;
+	sf::RectangleShape boardRectangle(sf::Vector2f(gameOverScreenSize, gameOverScreenSize));
+	const sf::Color semiTransparentGray = sf::Color(0, 0, 0, 0.25 * 255);
+	boardRectangle.setFillColor(semiTransparentGray);
+	renderTexture.draw(boardRectangle);
+	renderTexture.display();
+
+	// get the target texture (where the stuff has been drawn)
+	const sf::Texture& boardTexture = renderTexture.getTexture();
+
+	// draw game grid to the window
+	sf::RectangleShape boardTextureRect(sf::Vector2f(_boardSize, _boardSize));
+	boardTextureRect.setTexture(&boardTexture);
+	//sf::Sprite boardSprite(boardTexture);
+	window.draw(boardTextureRect, &shader);
+
+	window.display();
 }

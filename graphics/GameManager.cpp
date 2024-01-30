@@ -7,6 +7,7 @@ GameManager::GameManager(OthelloBoard& othello) :
 	const float boardSize = _gameView.getBoardSize();
 	_window.create(sf::VideoMode(boardSize, boardSize, 32), "Othello", sf::Style::Titlebar | sf::Style::Close);
 	_window.setFramerateLimit(60);
+	_window.setVerticalSyncEnabled(true);
 }
 
 const std::optional<sf::Vector2i> GameManager::getMouseClickPos() {
@@ -63,9 +64,9 @@ GameStepOutcome GameManager::gameStep(
 
 		// render the board with hints
 		_gameView.renderGameState(_window, _othello);
-		_window.display();
+		//_window.display();
 
-		auto humanAction = getHumanAction(actions, mousePos);
+		const auto humanAction = getHumanAction(actions, mousePos);
 		if (!humanAction.has_value()) {
 			return GameStepOutcome::Pending;
 		}
@@ -123,6 +124,9 @@ void GameManager::pollWindowEvent() {
 		case sf::Event::MouseButtonReleased:
 			isMouseDragging = false;
 			break;
+
+		default:
+			break;
 		}
 	}
 }
@@ -143,21 +147,23 @@ void GameManager::gameLoop() {
 		// clear the window with black color
 		_window.clear(sf::Color::Black);
 
-		// render board state
-		_gameView.renderGameState(_window, _othello);
-		_window.display();
-
 		// check for human board input
 		const std::optional<sf::Vector2i> mouseClickPos = getMouseClickPos();
 
-		if (_othello.isGameOver()) {
+		if (true) {
 			printf("GAME OVER\n");
+			_gameView.renderGameOver(_window, _othello);
+			continue;
 		}
 		else {
+			// render board state
+			_gameView.renderGameState(_window, _othello);
+
 			// player does an action
 			// for now Human plays Black
 			const auto player = _players[playerIdx];
-			const auto gameStepOutcome = gameStep(player, player.color == Piece::White, mouseClickPos);
+			// const auto gameStepOutcome = gameStep(player, player.color == Piece::White, mouseClickPos);
+			const auto gameStepOutcome = gameStep(player);
 			if (gameStepOutcome == GameStepOutcome::Action) {
 				playerIdx++;
 				playerIdx %= 2;

@@ -26,4 +26,17 @@ if(WIN32)
         VERBATIM)
 endif()
 
+
+#target_include_directories(graphics PRIVATE shaders)
+#install(DIRECTORY shaders DESTINATION .)
+
+add_custom_command(
+         TARGET graphics POST_BUILD
+         COMMAND ${CMAKE_COMMAND} -E copy_directory              
+             ${CMAKE_SOURCE_DIR}/graphics/shaders $<TARGET_FILE_DIR:graphics>/shaders
+         COMMENT "Copying shaders" VERBATIM
+         )
+
+# ADD_DEPENDENCIES ( graphics copy_shader_files )
+
 install(TARGETS graphics)

@@ -138,8 +138,7 @@ void OthelloBoard::clearSpecialPieces(bool keepRecentMove) {
 }
 
 void OthelloBoard::enableActionHints(const std::vector<Action>& actions) {
-	const bool keepRecentMove = true;
-	clearSpecialPieces(keepRecentMove);
+	clearSpecialPieces(true); // keepRecentMove = true
 
 	// display possible actions
 	for (const auto& action : actions) {

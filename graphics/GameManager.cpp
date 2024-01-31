@@ -10,14 +10,18 @@ GameManager::GameManager(OthelloBoard& othello) :
 	settings.antialiasingLevel = 4;
 
 	_window.create(
-		sf::VideoMode(boardSize, boardSize, 32), 
-		"Othello", 
-		sf::Style::Titlebar | sf::Style::Close, 
+		sf::VideoMode(boardSize, boardSize, 32),
+		"Othello",
+		sf::Style::Titlebar | sf::Style::Close,
 		settings
 	);
-	_window.setFramerateLimit(60);
 	_window.setVerticalSyncEnabled(true);
 
+	// set window icon
+	sf::Image icon;
+	icon.loadFromFile("shaders/othello_icon.png");
+	const sf::Vector2u iconSize = icon.getSize();
+	_window.setIcon(iconSize.x, iconSize.y, icon.getPixelsPtr());
 }
 
 const std::optional<sf::Vector2i> GameManager::getMouseClickPos() {
@@ -181,8 +185,8 @@ void GameManager::gameLoop() {
 			// player does an action
 			// for now Human plays Black
 			const auto player = _players[playerIdx];
-			//const auto gameStepOutcome = gameStep(player, player.color == Piece::White, mouseClickPos);
-			const auto gameStepOutcome = gameStep(player);
+			const auto gameStepOutcome = gameStep(player, player.color == Piece::Black, mouseClickPos);
+			//const auto gameStepOutcome = gameStep(player);
 			if (gameStepOutcome == GameStepOutcome::Action) {
 				playerIdx++;
 				playerIdx %= 2;

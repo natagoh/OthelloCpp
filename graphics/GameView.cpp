@@ -128,7 +128,7 @@ void GameView::renderGameOver(sf::RenderWindow& window, OthelloBoard& othello) {
 	winnerText.setFont(font); // font is a sf::Font
 	winnerText.setCharacterSize(winnerTextSize); // in pixels, not points!
 	winnerText.setFillColor(sf::Color::White);
-	winnerText.setStyle(sf::Text::Bold | sf::Text::Underlined);
+	winnerText.setStyle(sf::Text::Bold);
 
 	// draw winner text
 	const auto& [blackScore, whiteScore] = othello.getScore();
@@ -157,7 +157,7 @@ void GameView::renderGameOver(sf::RenderWindow& window, OthelloBoard& othello) {
 	whiteText.setFont(font); // font is a sf::Font
 	whiteText.setCharacterSize(textSize); // in pixels, not points!
 	whiteText.setFillColor(sf::Color::White);
-	whiteText.setStyle(sf::Text::Bold);
+	//whiteText.setStyle(sf::Text::Bold);
 	whiteText.setString("(white) x " + std::to_string(whiteScore));
 
 	const  sf::FloatRect whiteTextBounds = whiteText.getLocalBounds();
@@ -172,7 +172,7 @@ void GameView::renderGameOver(sf::RenderWindow& window, OthelloBoard& othello) {
 	blackText.setFont(font); // font is a sf::Font
 	blackText.setCharacterSize(textSize); // in pixels, not points!
 	blackText.setFillColor(sf::Color::White);
-	blackText.setStyle(sf::Text::Bold);
+	//blackText.setStyle(sf::Text::Bold);
 
 	blackText.setString("(black) x " + std::to_string(blackScore));
 	const  sf::FloatRect blackTextBounds = whiteText.getLocalBounds();

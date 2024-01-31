@@ -2,12 +2,22 @@
 #include <SFML/Window/Mouse.hpp>
 
 GameManager::GameManager(OthelloBoard& othello) :
+	_useOpponentDelay(true),
 	_othello(othello),
 	_gameView(GameView()) {
 	const float boardSize = _gameView.getBoardSize();
-	_window.create(sf::VideoMode(boardSize, boardSize, 32), "Othello", sf::Style::Titlebar | sf::Style::Close);
+	sf::ContextSettings settings;
+	settings.antialiasingLevel = 4;
+
+	_window.create(
+		sf::VideoMode(boardSize, boardSize, 32), 
+		"Othello", 
+		sf::Style::Titlebar | sf::Style::Close, 
+		settings
+	);
 	_window.setFramerateLimit(60);
 	_window.setVerticalSyncEnabled(true);
+
 }
 
 const std::optional<sf::Vector2i> GameManager::getMouseClickPos() {
@@ -74,7 +84,7 @@ GameStepOutcome GameManager::gameStep(
 	}
 	else {
 		// add artificial delay for AI agent action
-		if (_clock.getElapsedTime().asSeconds() <= 1) {
+		if (_useOpponentDelay && _clock.getElapsedTime().asSeconds() <= 1) {
 			return GameStepOutcome::Pending;
 		}
 		_clock.restart();
@@ -136,7 +146,7 @@ void GameManager::gameLoop() {
 
 	sf::Clock clock;
 	const int secondsPerFrame = 1;
-
+	_useOpponentDelay = false;
 
 	// run the program as long as the window is open
 	while (_window.isOpen())
@@ -144,14 +154,23 @@ void GameManager::gameLoop() {
 		// check all the window's events that were triggered since the last iteration of the loop
 		pollWindowEvent();
 
+		/*
+		// game tick
+		sf::Time elapsed = clock.getElapsedTime();
+		if (elapsed.asSeconds() < secondsPerFrame) {
+			pollWindowEvent();
+			continue;
+		}
+		clock.restart();
+		*/
+
 		// clear the window with black color
-		_window.clear(sf::Color::Black);
+		_window.clear(sf::Color::Transparent);
 
 		// check for human board input
 		const std::optional<sf::Vector2i> mouseClickPos = getMouseClickPos();
 
-		if (true) {
-			printf("GAME OVER\n");
+		if (_othello.gameOver()) {
 			_gameView.renderGameOver(_window, _othello);
 			continue;
 		}
@@ -162,19 +181,12 @@ void GameManager::gameLoop() {
 			// player does an action
 			// for now Human plays Black
 			const auto player = _players[playerIdx];
-			const auto gameStepOutcome = gameStep(player, player.color == Piece::White, mouseClickPos);
-			// const auto gameStepOutcome = gameStep(player);
+			//const auto gameStepOutcome = gameStep(player, player.color == Piece::White, mouseClickPos);
+			const auto gameStepOutcome = gameStep(player);
 			if (gameStepOutcome == GameStepOutcome::Action) {
 				playerIdx++;
 				playerIdx %= 2;
 			}
 		}
-
-		// game tick
-		sf::Time elapsed = clock.getElapsedTime();
-		if (elapsed.asSeconds() < secondsPerFrame) {
-			pollWindowEvent();
-		}
-		clock.restart();
 	}
 }

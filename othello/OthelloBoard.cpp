@@ -201,7 +201,7 @@ void OthelloBoard::performAction(const Action& action) {
 	_board[row][col] = newPieceColor;
 }
 
-bool OthelloBoard::isGameOver() {
+bool OthelloBoard::gameOver() {
 	// check that the board is all filled
 	int countEmpty = 0;
 	for (int i = 0; i < 8; i++) {
@@ -225,4 +225,30 @@ bool OthelloBoard::isGameOver() {
 	}
 
 	return true;
+}
+
+const std::tuple<int, int> OthelloBoard::getScore() {
+	int blackCount = 0;
+	int whiteCount = 0;
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			switch (_board[i][j]) {
+				case Piece::NewWhite:
+				case Piece::White:
+					whiteCount++;
+					break;
+
+				case Piece::NewBlack:
+				case Piece::Black:
+					blackCount++;
+					break;
+
+				case Piece::Possible:
+				case Piece::Empty:
+					break;
+			}
+		}
+	}
+
+	return std::make_tuple(blackCount, whiteCount);
 }

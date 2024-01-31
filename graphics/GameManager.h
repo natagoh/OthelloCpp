@@ -25,6 +25,7 @@ private:
 	sf::RenderWindow _window;
 	GameView _gameView;
 	sf::Clock _clock;
+	bool _useOpponentDelay;
 
 	// gets action for human turn out of possible actions provided
 	const std::optional<Action> getHumanAction(

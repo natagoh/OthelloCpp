@@ -49,6 +49,9 @@ public:
 	void performAction(const Action &action);
 
 	// checks if the game is over (no more possible actions for either player)
-	bool isGameOver();
+	bool gameOver();
+
+	// returns tuple of (black, white) scores
+	const std::tuple<int, int> getScore();
 
 };

@@ -162,8 +162,8 @@ void GameManager::gameLoop() {
 			// player does an action
 			// for now Human plays Black
 			const auto player = _players[playerIdx];
-			// const auto gameStepOutcome = gameStep(player, player.color == Piece::White, mouseClickPos);
-			const auto gameStepOutcome = gameStep(player);
+			const auto gameStepOutcome = gameStep(player, player.color == Piece::White, mouseClickPos);
+			// const auto gameStepOutcome = gameStep(player);
 			if (gameStepOutcome == GameStepOutcome::Action) {
 				playerIdx++;
 				playerIdx %= 2;

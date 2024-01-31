@@ -1,4 +1,6 @@
 #include "GameView.h"
+#include "SFML/Graphics/RenderTarget.hpp"
+#include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Graphics/Shader.hpp"
 #include "SFML/System/Vector2.hpp"
 #include <SFML/Graphics/RenderTexture.hpp>
@@ -23,31 +25,62 @@ const float GameView::getBoardSquareSize() {
 	return _boardSquareSize;
 }
 
-void GameView::renderGameGrid(sf::RenderWindow& window) {
-	/*
-	* + -- +
-	* | XX |
-	* | XX |
-	* + -- +
-	*
-	* There is going to be some buffer between the piece and the square containing it
-	*/
-
-	// create a render texture for the board
+void GameView::renderGameState(sf::RenderWindow& window, OthelloBoard& othello) {
+	// draw game state to render texture
 	sf::RenderTexture renderTexture;
 	if (!renderTexture.create(_boardSize, _boardSize)) {
 		printf("Error creating render texture\n");
 	}
+	drawGameState(renderTexture, othello);
 
-	// drawing uses the same functions
-	renderTexture.clear();
+	// draw render texture to window
+	renderTexture.display();
+	const sf::Texture& windowTexture = renderTexture.getTexture();
+	sf::Sprite windowSprite(windowTexture);
+	window.draw(windowSprite);
+	window.display();
+}
+
+
+void GameView::renderGameOver(sf::RenderWindow& window, OthelloBoard& othello) {
+	std::cout << std::filesystem::current_path() << std::endl;
+
+	// initialize shader
+	sf::Shader shader = sf::Shader{};
+	 if (!sf::Shader::isAvailable() ) {
+		std::cerr << "Shader not available\n";
+		return; 
+	 }
+    if (!shader.loadFromFile("graphics/shaders/GaussianBlur.frag", sf::Shader::Fragment)) {
+        std::cerr << "Couldn't load fragment shader\n";
+		return;
+    }
+	shader.setUniform("blurOffset", sf::Glsl::Vec2{ sf::Vector2f(10.f, 10.f) });
+	shader.setUniform("texture", sf::Shader::CurrentTexture);
+
+	// draw game state to render texture
+	sf::RenderTexture renderTexture;
+	if (!renderTexture.create(_boardSize, _boardSize)) {
+		printf("Error creating render texture\n");
+	}
+	drawGameState(renderTexture, othello);
+
+	// draw render texture to window
+	renderTexture.display();
+	const sf::Texture& windowTexture = renderTexture.getTexture();
+	sf::Sprite windowSprite(windowTexture);
+	window.draw(windowSprite);
+	window.display();
+}
+
+void GameView::drawGameGrid(sf::RenderTarget &renderTarget) {
+	renderTarget.clear();
 
 	// draw board rectangle
 	sf::RectangleShape boardRectangle(sf::Vector2f(_boardSize, _boardSize));
 	sf::Color forestGreen = sf::Color(63, 90, 54);
 	boardRectangle.setFillColor(forestGreen);
-	renderTexture.draw(boardRectangle);
-	renderTexture.display();
+	renderTarget.draw(boardRectangle);
 
 	for (int i = 1; i < 8; i++) {
 		// draw horizontal board lines
@@ -55,28 +88,18 @@ void GameView::renderGameGrid(sf::RenderWindow& window) {
 			sf::Vertex(sf::Vector2f(0.f, _boardSquareSize * i), sf::Color::Black),
 			sf::Vertex(sf::Vector2f(_boardSize, _boardSquareSize * i), sf::Color::Black)
 		};
-		renderTexture.draw(horizontalLine, 2, sf::Lines);
+		renderTarget.draw(horizontalLine, 2, sf::Lines);
 
 		// draw vertical board lines
 		sf::Vertex verticalLine[] = {
 			sf::Vertex(sf::Vector2f(_boardSquareSize * i, 0.f), sf::Color::Black),
 			sf::Vertex(sf::Vector2f(_boardSquareSize * i, _boardSize), sf::Color::Black)
 		};
-		renderTexture.draw(verticalLine, 2, sf::Lines);
+		renderTarget.draw(verticalLine, 2, sf::Lines);
 	}
-
-	// get the target texture (where the stuff has been drawn)
-	const sf::Texture& boardTexture = renderTexture.getTexture();
-
-	// draw game grid to the window
-	sf::RectangleShape boardTextureRect(sf::Vector2f(_boardSize, _boardSize));
-	boardTextureRect.setTexture(&boardTexture);
-	//sf::Sprite boardSprite(boardTexture);
-	window.draw(boardTextureRect);
 }
 
-void GameView::renderPiece(sf::RenderWindow& window, Piece color, int row, int col) {
-	// draw a circle at position (row, col) on the board
+void GameView::drawPiece(sf::RenderTarget &renderTarget, const Piece &color, const int row, const int col) {
 	const float rowPos = _boardSquareSize / 2 + _boardSquareSize * row;
 	const float colPos = _boardSquareSize / 2 + _boardSquareSize * col;
 
@@ -109,29 +132,29 @@ void GameView::renderPiece(sf::RenderWindow& window, Piece color, int row, int c
 
 	switch (color) {
 	case Piece::Black:
-		window.draw(blackPiece);
+		renderTarget.draw(blackPiece);
 		break;
 
 	case Piece::White:
-		window.draw(whitePiece);
+		renderTarget.draw(whitePiece);
 		break;
 
 	case Piece::NewBlack:
-		window.draw(blackPiece);
+		renderTarget.draw(blackPiece);
 
 		// draw a red bullseye in the center
-		window.draw(bullseye);
+		renderTarget.draw(bullseye);
 		break;
 
 	case Piece::NewWhite:
-		window.draw(whitePiece);
+		renderTarget.draw(whitePiece);
 
 		// draw a red bullseye in the center
-		window.draw(bullseye);
+		renderTarget.draw(bullseye);
 		break;
 
 	case Piece::Possible:
-		window.draw(possiblePiece);
+		renderTarget.draw(possiblePiece);
 		break;
 
 	case Piece::Empty:
@@ -141,10 +164,9 @@ void GameView::renderPiece(sf::RenderWindow& window, Piece color, int row, int c
 	}
 }
 
-
-void GameView::renderGameState(sf::RenderWindow& window, OthelloBoard& othello) {
+void GameView::drawGameState(sf::RenderTarget &renderTarget, OthelloBoard& othello) {
 	// render the game grid
-	renderGameGrid(window);
+	drawGameGrid(renderTarget);
 
 	Piece board[8][8];
 	othello.copyBoard(board);
@@ -152,52 +174,7 @@ void GameView::renderGameState(sf::RenderWindow& window, OthelloBoard& othello) 
 	// render the pieces
 	for (int row = 0; row < 8; row++) {
 		for (int col = 0; col < 8; col++) {
-			renderPiece(window, board[row][col], row, col);
+			drawPiece(renderTarget, board[row][col], row, col);
 		}
 	}
-
-	window.display();
-}
-
-
-void GameView::renderGameOver(sf::RenderWindow& window, OthelloBoard& othello) {
-	sf::Shader shader = sf::Shader{};
-	 if (!sf::Shader::isAvailable() ) {
-		std::cerr << "Shader not available\n";
-		return; 
-	 }
-    if (!shader.loadFromFile("shaders/GaussianBlur.frag", sf::Shader::Fragment)) {
-        std::cerr << "Couldn't load fragment shader\n";
-		return;
-    }
-	shader.setUniform("u_xyBlurRadius", sf::Glsl::Vec2{ sf::Vector2f(0.05f, 0.05f) });
-
-
-	// create a render texture for the board
-	sf::RenderTexture renderTexture;
-	if (!renderTexture.create(_boardSize, _boardSize)) {
-		printf("Error creating render texture\n");
-	}
-
-	// drawing uses the same functions
-	renderTexture.clear();
-
-	// draw board rectangle
-	const float gameOverScreenSize = 100.f;
-	sf::RectangleShape boardRectangle(sf::Vector2f(gameOverScreenSize, gameOverScreenSize));
-	const sf::Color semiTransparentGray = sf::Color(0, 0, 0, 0.25 * 255);
-	boardRectangle.setFillColor(semiTransparentGray);
-	renderTexture.draw(boardRectangle);
-	renderTexture.display();
-
-	// get the target texture (where the stuff has been drawn)
-	const sf::Texture& boardTexture = renderTexture.getTexture();
-
-	// draw game grid to the window
-	sf::RectangleShape boardTextureRect(sf::Vector2f(_boardSize, _boardSize));
-	boardTextureRect.setTexture(&boardTexture);
-	//sf::Sprite boardSprite(boardTexture);
-	window.draw(boardTextureRect, &shader);
-
-	window.display();
 }

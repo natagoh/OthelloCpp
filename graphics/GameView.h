@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/Graphics/RenderWindow.hpp>
 #include "../othello/OthelloBoard.h"
+#include "SFML/Graphics/RenderTarget.hpp"
+#include "SFML/Graphics/RenderTexture.hpp"
 
 class GameView {
 private:
@@ -9,8 +11,9 @@ private:
 	const float _boardSquareSize;
 	const float _boardSize;
 
-	void renderGameGrid(sf::RenderWindow& window);
-	void renderPiece(sf::RenderWindow& window, Piece color, int row, int col);
+	void drawGameGrid(sf::RenderTarget &renderTarget);
+	void drawPiece(sf::RenderTarget &renderTarget, const Piece &color, const int row, const int col);
+	void drawGameState(sf::RenderTarget &renderTarget, OthelloBoard& othello);
 
 public:
 	GameView();

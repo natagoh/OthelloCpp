@@ -17,9 +17,8 @@ target_link_libraries(
     graphics 
         PRIVATE sfml-graphics
         PUBLIC othello_lib
-        PRIVATE player_lib
+        PUBLIC players_lib
 )
-
 
 if(WIN32)
     add_custom_command(

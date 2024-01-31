@@ -12,7 +12,7 @@ private:
 public:
 	// initializes a player with the given color
 	RandomPlayer(const Piece& color);
-	~RandomPlayer() override;
+	~RandomPlayer();
 
 	// gets the action to perform at the current game state
 	std::optional<Action> getNextAction(OthelloBoard &othello);

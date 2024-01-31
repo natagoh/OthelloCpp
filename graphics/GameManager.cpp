@@ -154,13 +154,13 @@ void GameManager::gameLoop() {
 	_useOpponentDelay = false;
 
 	// list of players
-	//auto blackPlayer = std::make_shared<RandomPlayer>(Piece::Black);
-	//auto whitePlayer = std::make_shared<RandomPlayer>(Piece::White);
+	auto blackPlayer = std::make_shared<RandomPlayer>(Piece::Black);
+	auto whitePlayer = std::make_shared<RandomPlayer>(Piece::White);
 
 	std::vector<std::shared_ptr<PlayerInterface>> players;
 
-	//players.push_back(blackPlayer);
-	// players.push_back(whitePlayer);
+	players.push_back(blackPlayer);
+	players.push_back(whitePlayer);
 
 
 	

@@ -65,14 +65,14 @@ GameStepOutcome GameManager::gameStep(
 	bool isHuman,
 	const std::optional<sf::Vector2i>& mousePos
 ) {
-	auto actions = _othello.getValidActions((char)player->getColor());
-	if (actions.empty()) {
-		// no valid actions, skip turn
-		return GameStepOutcome::Action;
-	}
-
 	Action action;
 	if (isHuman) {
+		auto actions = _othello.getValidActions((char)player->getColor());
+		if (actions.empty()) {
+			// no valid actions, skip turn
+			return GameStepOutcome::Action;
+		}
+
 		// show the action hints
 		_othello.enableActionHints(actions);
 		//_othello.printBoard();
@@ -94,9 +94,12 @@ GameStepOutcome GameManager::gameStep(
 		}
 		_clock.restart();
 
-		// pick a random action
-		int idx = rand() % actions.size();
-		action = actions[idx];
+		auto playerAction = player->getNextAction(_othello);
+		if (!playerAction.has_value()) {
+			// no valid actions, skip turn
+			return GameStepOutcome::Action;
+		}
+		action = playerAction.value();
 	}
 
 	printf("performing action\n");

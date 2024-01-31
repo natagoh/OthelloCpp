@@ -31,11 +31,11 @@ endif()
 #install(DIRECTORY shaders DESTINATION .)
 
 add_custom_command(
-         TARGET graphics POST_BUILD
+         TARGET graphics PRE_BUILD
          COMMAND ${CMAKE_COMMAND} -E copy_directory              
              ${CMAKE_SOURCE_DIR}/graphics/shaders $<TARGET_FILE_DIR:graphics>/shaders
          COMMENT "Copying shaders to \/bin" VERBATIM
-         )
+ )
 
 # ADD_DEPENDENCIES ( graphics copy_shader_files )
 

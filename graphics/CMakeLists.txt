@@ -12,11 +12,13 @@ FetchContent_Declare(SFML
     GIT_TAG 2.6.x)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(graphics "main.cpp" "GameManager.cpp" "GameManager.h" "GameView.cpp" "GameView.h" "Player.h")
-target_link_libraries(graphics PRIVATE sfml-graphics)
-target_link_libraries(graphics PRIVATE othello_lib)
-
-target_compile_features(graphics PRIVATE cxx_std_17)
+add_executable(graphics "main.cpp" "GameManager.cpp" "GameManager.h" "GameView.cpp" "GameView.h")
+target_link_libraries(
+    graphics 
+        PRIVATE sfml-graphics
+        PUBLIC othello_lib
+        PUBLIC players_lib
+)
 
 if(WIN32)
     add_custom_command(

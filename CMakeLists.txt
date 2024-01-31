@@ -2,7 +2,7 @@
 # and include sub-projects here.
 #
 cmake_minimum_required(VERSION 3.16)
-project(Othello LANGUAGES CXX)
+project(OthelloCpp LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -10,6 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Include sub-projects.
 add_subdirectory ("othello")
 add_subdirectory ("graphics")
+add_subdirectory ("players")
 
 # Add tests
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)

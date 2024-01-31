@@ -1,5 +1,6 @@
 #include "GameManager.h"
 #include <SFML/Window/Mouse.hpp>
+#include "../players/RandomPlayer.h"
 
 GameManager::GameManager(OthelloBoard& othello) :
 	_useOpponentDelay(true),
@@ -60,11 +61,11 @@ const std::optional<Action> GameManager::getHumanAction(
 }
 
 GameStepOutcome GameManager::gameStep(
-	const Player& player,
+	std::shared_ptr<PlayerInterface> player,
 	bool isHuman,
 	const std::optional<sf::Vector2i>& mousePos
 ) {
-	auto actions = _othello.getValidActions((char)player.color);
+	auto actions = _othello.getValidActions((char)player->getColor());
 	if (actions.empty()) {
 		// no valid actions, skip turn
 		return GameStepOutcome::Action;
@@ -152,6 +153,24 @@ void GameManager::gameLoop() {
 	const int secondsPerFrame = 1;
 	_useOpponentDelay = false;
 
+	// list of players
+	auto blackPlayer = std::make_shared<RandomPlayer>(Piece::Black);
+	auto whitePlayer = std::make_shared<RandomPlayer>(Piece::White);
+
+	std::vector<std::shared_ptr<PlayerInterface>> players;
+
+	players.push_back(blackPlayer);
+	players.push_back(whitePlayer);
+
+
+	
+	/*
+	PlayerInterface players[2] = {
+		RandomPlayer(Piece::Black),
+		RandomPlayer(Piece::Black)
+	};
+	*/
+
 	// run the program as long as the window is open
 	while (_window.isOpen())
 	{
@@ -184,9 +203,9 @@ void GameManager::gameLoop() {
 
 			// player does an action
 			// for now Human plays Black
-			const auto player = _players[playerIdx];
-			const auto gameStepOutcome = gameStep(player, player.color == Piece::Black, mouseClickPos);
-			//const auto gameStepOutcome = gameStep(player);
+			auto player = players[playerIdx];
+			//const auto gameStepOutcome = gameStep(player, player.color == Piece::Black, mouseClickPos);
+			const auto gameStepOutcome = gameStep(player);
 			if (gameStepOutcome == GameStepOutcome::Action) {
 				playerIdx++;
 				playerIdx %= 2;

@@ -1,5 +1,5 @@
 #include "MinimaxPlayer.h"
-
+#include <limits>
 
 namespace {
 	std::vector<std::vector<float>> boardWeights{
@@ -44,9 +44,71 @@ namespace {
 		return evaluateBoard(newBoard, color);
 	}
 
+	// TODO: consolidate with Othello Piece utilities
+	Piece getOppositeColor(const Piece& pieceColor) {
+		return pieceColor == Piece::White ? Piece::Black : Piece::White;
+	}
+
+	// Opponent turn: find the action that minimizes the board heuristic score
+	float minimize(OthelloBoard& othello, const Piece& color) {
+		Piece initialBoard[8][8];
+		othello.copyBoard(initialBoard);
+
+		// find the action that minimizes the board heuristic state
+		float minScore = std::numeric_limits<float>::max();
+		const auto oppositeColor = getOppositeColor(color);
+		const auto actions = othello.getValidActions((char)oppositeColor);
+		for (const auto action : actions) {
+			othello.performAction(action);
+
+			float score = evaluateAction(othello, action, oppositeColor);
+			minScore = std::min(score, minScore);
+
+			// reset othello board state to before action was performed
+			othello.setBoard(initialBoard);
+		}
+		return minScore;
+	}
+
+
+	// Player turn: find the action that maximizes the board heuristic score
+	std::optional<Action> maximize(OthelloBoard& othello, const Piece& color) {
+		Piece initialBoard[8][8];
+		othello.copyBoard(initialBoard);
+
+		float maxScore = std::numeric_limits<float>::min();
+		const auto actions = othello.getValidActions((char)color);
+		if (actions.empty()) {
+			return std::nullopt;
+		}
+
+		auto bestAction = actions[0];
+		for (const auto action : actions) {
+			// othello board state after performing action
+			othello.performAction(action);
+
+			float minimizerScore = minimize(othello, color);
+			if (minimizerScore > maxScore) {
+				maxScore = minimizerScore;
+				bestAction = action;
+			}
+
+			// reset othello board state to before action was performed
+			othello.setBoard(initialBoard);
+		}
+		return bestAction;
+	}
+
+
+	// 2 ply minimax
+	std::optional<Action> minimax(OthelloBoard& othello, const Piece& color, const int ply) {
+		return maximize(othello, color);
+	}
+
+
 } // namespace
 
-MinimaxPlayer::MinimaxPlayer(const Piece& color) : _color(color) {}
+MinimaxPlayer::MinimaxPlayer(const Piece& color, const int ply) : _color(color), _ply(ply) {}
 
 MinimaxPlayer::~MinimaxPlayer() {}
 
@@ -56,6 +118,11 @@ Piece MinimaxPlayer::getColor() {
 
 // returns minimax action
 std::optional<Action> MinimaxPlayer::getNextAction(OthelloBoard& othello) {
+	if (_ply == 2) {
+		return minimax(othello, _color, 2);
+	}
+	
+	// 1 ply minimax
 	Piece board[8][8];
 	othello.copyBoard(board);
 
@@ -66,7 +133,7 @@ std::optional<Action> MinimaxPlayer::getNextAction(OthelloBoard& othello) {
 		return std::nullopt;
 	}
 
-	// pick action with highest heuristic score
+	// 1ply minimax: pick action with highest heuristic score
 	float highestScore = 0;
 	Action bestAction = actions[0];
 	for (const auto action : actions) {
@@ -75,5 +142,5 @@ std::optional<Action> MinimaxPlayer::getNextAction(OthelloBoard& othello) {
 			bestAction = action;
 		}
 	}
-	return bestAction;
+	return bestAction;	
 }

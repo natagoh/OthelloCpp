@@ -156,8 +156,8 @@ void GameManager::gameLoop() {
 	_useOpponentDelay = false;
 
 	// list of players
-	auto blackPlayer = std::make_shared<RandomPlayer>(Piece::Black);
-	auto whitePlayer = std::make_shared<MinimaxPlayer>(Piece::White);
+	auto blackPlayer = std::make_shared<MinimaxPlayer>(Piece::Black, 2);
+	auto whitePlayer = std::make_shared<MinimaxPlayer>(Piece::White, 2);
 
 	std::vector<std::shared_ptr<PlayerInterface>> players = { 
 		blackPlayer, 
@@ -199,8 +199,8 @@ void GameManager::gameLoop() {
 			// player does an action
 			// for now Human plays Black
 			auto player = players[playerIdx];
-			//const auto gameStepOutcome = gameStep(player, player.color == Piece::Black, mouseClickPos);
-			const auto gameStepOutcome = gameStep(player);
+			const auto gameStepOutcome = gameStep(player, player->getColor() == Piece::Black, mouseClickPos);
+			// const auto gameStepOutcome = gameStep(player);
 			if (gameStepOutcome == GameStepOutcome::Action) {
 				playerIdx++;
 				playerIdx %= 2;

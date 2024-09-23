@@ -8,10 +8,11 @@ class MinimaxPlayer : public PlayerInterface {
 
 private:
 	Piece _color;
+	int _ply;
 
 public:
 	// initializes a player with the given color
-	MinimaxPlayer(const Piece& color);
+	MinimaxPlayer(const Piece& color, const int ply);
 	~MinimaxPlayer();
 
 	// gets the action to perform at the current game state

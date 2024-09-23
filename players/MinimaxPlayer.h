@@ -4,18 +4,18 @@
 #include <vector>
 
 // Player interface
-class RandomPlayer : public PlayerInterface {
+class MinimaxPlayer : public PlayerInterface {
 
 private:
 	Piece _color;
 
 public:
 	// initializes a player with the given color
-	RandomPlayer(const Piece& color);
-	~RandomPlayer();
+	MinimaxPlayer(const Piece& color);
+	~MinimaxPlayer();
 
 	// gets the action to perform at the current game state
-	std::optional<Action> getNextAction(OthelloBoard &othello);
+	std::optional<Action> getNextAction(OthelloBoard& othello);
 
 	Piece getColor();
 };

@@ -1,6 +1,7 @@
 #include "GameManager.h"
 #include <SFML/Window/Mouse.hpp>
 #include "../players/RandomPlayer.h"
+#include "../players/MinimaxPlayer.h"
 
 GameManager::GameManager(OthelloBoard& othello) :
 	_useOpponentDelay(true),
@@ -150,29 +151,20 @@ void GameManager::pollWindowEvent() {
 }
 
 void GameManager::gameLoop() {
-	int playerIdx = 0;
-
 	sf::Clock clock;
 	const int secondsPerFrame = 1;
 	_useOpponentDelay = false;
 
 	// list of players
 	auto blackPlayer = std::make_shared<RandomPlayer>(Piece::Black);
-	auto whitePlayer = std::make_shared<RandomPlayer>(Piece::White);
+	auto whitePlayer = std::make_shared<MinimaxPlayer>(Piece::White);
 
-	std::vector<std::shared_ptr<PlayerInterface>> players;
-
-	players.push_back(blackPlayer);
-	players.push_back(whitePlayer);
-
-
-	
-	/*
-	PlayerInterface players[2] = {
-		RandomPlayer(Piece::Black),
-		RandomPlayer(Piece::Black)
+	std::vector<std::shared_ptr<PlayerInterface>> players = { 
+		blackPlayer, 
+		whitePlayer 
 	};
-	*/
+
+	int playerIdx = 0;
 
 	// run the program as long as the window is open
 	while (_window.isOpen())
